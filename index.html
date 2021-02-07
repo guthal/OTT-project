@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+	<!-- stylesheet css -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/nivo-lightbox.css">
+	<link rel="stylesheet" href="css/nivo_themes/default/default.css">
+	<link rel="stylesheet" href="css/templatemo-style.css">
+	<!-- google web font css -->
+	<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+
+    <style>
+        /* Make the image fully responsive */
+        .carousel-inner img {
+          width: 100%;
+          height: 100%;
+        }
+
+        .smart-scroll{
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 1030;
+        }
+        .scrolled-down{
+            transform:translateY(-100%); transition: all 0.3s ease-in-out;
+        }
+        .scrolled-up{
+            transform:translateY(0); transition: all 0.3s ease-in-out;
+        }
+    </style>
+
+    <title>MyOTT</title>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+
+
+            <nav class="navbar smart-scroll navbar-expand-sm navbar-dark bg-primary">
+                <a class="navbar-brand" href="#">Brand</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="main_nav">
+                    <div class="col-sm-2" >Buy Rent</div>
+                    <div class="col-sm-2" >Weekly Stream</div>
+                    <div class="col-sm-2" >Live Stream</div>
+                    <div class="col-sm-2" >search</div>
+                    <div class="col-sm-2" >Lets Go!</div>
+                </div> <!-- navbar-collapse.// -->
+              </nav>
+
+
+            <div class="col-sm-12" style="background-color:lavenderblush; border : black 1px solid;">
+                <div class="col-sm-12" style="background-color:lavender;border : black 1px solid; height: 300px;">intro</div>
+            </div>
+            
+            <div class="col-sm-12" style="background-color:lavender; border : black 1px solid;">
+                Main Carousel               
+                <div id="demoCarouselMain" class="carousel slide" data-ride="carousel" style = "height: 400px;">
+                    <!-- The slideshow -->
+                    <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="d-flex bg-dark justify-content-center" style="height:350px; color: white;">
+                            <div class="col-sm-12 border ">Flex item 1.1</div>
+                        </div>   
+                    </div>
+
+
+                    <div class="carousel-item">
+                        <div class="d-flex bg-dark justify-content-center" style="height:350px; color: white;">
+                            <div class="col-sm-12 border ">Flex item 2.1</div>
+                        </div>   
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="d-flex bg-dark justify-content-center" style="height:350px; color: white;">
+                            <div class="col-sm-12 border ">Flex item 3.1</div>
+                        </div>   
+                    </div>
+
+                    <!-- Left and right controls -->
+                    <a class="carousel-control-prev" href="#demoCarouselMain" data-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#demoCarouselMain" data-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </a>
+
+                </div> 
+            </div>
+
+
+            <div class="col-sm-12" style="background-color:lavender; border : black 1px solid;">
+                Poster/Trailer                
+                <div id="demoCarousel" class="carousel slide" data-ride="carousel" style = "height: 250px;">
+                    <!-- Indicators -->
+                    <ul class="carousel-indicators">
+                    <li data-target="#demoCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#demoCarousel" data-slide-to="1"></li>
+                    <li data-target="#demoCarousel" data-slide-to="2"></li>
+
+                    </ul>
+                    <!-- The slideshow -->
+                    <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="d-flex bg-dark justify-content-center" style="height:200px; color: white;">
+                            <div class="col-sm-3 p-3 m-2 border ">Flex item 1.1</div>
+                            <div class="col-sm-3 p-3 m-2 border ">Flex item 1.2</div>
+                            <div class="col-sm-3 p-3 m-2 border ">Flex item 1.3</div>
+                        </div>   
+                    </div>
+
+
+                    <div class="carousel-item">
+                        <div class="d-flex bg-dark justify-content-center" style="height:200px; color: white;">
+                            <div class="col-sm-3 p-3 m-2 border ">Flex item 2.1</div>
+                            <div class="col-sm-3 p-3 m-2 border ">Flex item 2.2</div>
+                            <div class="col-sm-3 p-3 m-2 border ">Flex item 2.3</div>
+                        </div>   
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="d-flex bg-dark justify-content-center" style="height:200px; color: white;">
+                            <div class="col-sm-3 p-3 m-2 border ">Flex item 3.1</div>
+                            <div class="col-sm-3 p-3 m-2 border ">Flex item 3.2</div>
+                            <div class="col-sm-3 p-3 m-2 border ">Flex item 3.3</div>
+                        </div>   
+                    </div>
+
+                    <!-- Left and right controls -->
+                    <a class="carousel-control-prev" href="#demoCarousel" data-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#demoCarousel" data-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </a>
+
+                </div> 
+            </div>
+
+
+            <div class="col-sm-12" style="background-color:lavender; border : black 1px solid;">
+                Trending               
+                <div id="demoTrending" class="carousel slide" data-ride="carousel" style = "height: 250px;">
+                    <!-- Indicators -->
+                    <ul class="carousel-indicators">
+                    <li data-target="#demoTrending" data-slide-to="0" class="active"></li>
+                    <li data-target="#demoTrending" data-slide-to="1"></li>
+                    <li data-target="#demoTrending" data-slide-to="2"></li>
+
+                    </ul>
+                    <!-- The slideshow -->
+                    <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="d-flex bg-dark justify-content-center" style="height:200px; color: white;">
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 1.1</div>
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 1.2</div>
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 1.3</div>
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 1.4</div>
+                        </div>   
+                    </div>
+
+
+                    <div class="carousel-item">
+                        <div class="d-flex bg-dark justify-content-center" style="height:200px; color: white;">
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 2.1</div>
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 2.2</div>
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 2.3</div>
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 2.4</div>
+                        </div>   
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="d-flex bg-dark justify-content-center" style="height:200px; color: white;">
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 3.1</div>
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 3.2</div>
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 3.3</div>
+                            <div class="col-sm-2 p-1 m-1 border ">Flex item 3.4</div>
+                        </div>   
+                    </div>
+
+                    <!-- Left and right controls -->
+                    <a class="carousel-control-prev" href="#demoTrending" data-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#demoTrending" data-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </a>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+<!-- footer section -->
+<footer>
+	<div class="container">
+		<div class="row">
+        
+			<div class="col-sm-5">
+				<div  class="img-responsive" alt="logo">
+                    <h1>LOGO</h1>
+				<p>Bangalore, India</p>
+				<p><i class="fa fa-phone"></i>+91 XXX-XXX-XXXX</p>
+				<p><i class="fa fa-envelope-o"></i>myOTTApp@gmail.com</p>
+			</div>
+
+            <div class="copyright">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>Copyright © 2021 MyOTTApp</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+		</div>
+	</div>
+</footer>
+
+
+
+
+
+
+
+<script>
+
+// add padding top to show content behind navbar
+$('body').css('padding-top', $('.navbar').outerHeight() + 'px')
+
+// detect scroll top or down
+if ($('.smart-scroll').length > 0) { // check if element exists
+    var last_scroll_top = 0;
+    $(window).on('scroll', function() {
+        scroll_top = $(this).scrollTop();
+        if(scroll_top < last_scroll_top) {
+            $('.smart-scroll').removeClass('scrolled-down').addClass('scrolled-up');
+        }
+        else {
+            $('.smart-scroll').removeClass('scrolled-up').addClass('scrolled-down');
+        }
+        last_scroll_top = scroll_top;
+    });
+}
+
+</script>
+
+</body>
+</html>
