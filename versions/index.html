@@ -45,26 +45,9 @@
             width: 100%;
             background-position: center; /* Center the image */
             background-repeat: no-repeat; /* Do not repeat the image */
-            background-size: cover; /* Resize the background image to cover the entire container OR use :contian */ 
+            background-size: cover; /* Resize the background image to cover the entire container */ 
             position: relative; 
             display: flex;
-        }
-
-        #search[type=text] {
-            width: 100px;
-            box-sizing: border-box;
-            border: 2px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            background-color: white;
-            background-position: 10px 10px; 
-            padding: 6px 10px 6px 20px;
-            -webkit-transition: width 0.4s ease-in-out;
-            transition: width 0.4s ease-in-out;
-        }
-
-        #search[type=text]:focus {
-            width: 80%;
         }
 
 
@@ -84,7 +67,7 @@
                 <div class="collapse navbar-collapse" id="main_nav">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <button type="button" class="btn btn-outline-primary"  style="width: 150px; border:none; text-align: left">Live Stream</button>
+                        <button type="button" class="btn btn-outline-primary" style="width: 150px; border:none; text-align: left;">Login</button>
                     </li>
                     <li>
                         <button type="button" class="btn btn-outline-primary" style="width: 150px; border:none; text-align: left">Buy Rent</button>
@@ -92,14 +75,16 @@
                     <li>                        
                         <button type="button" class="btn btn-outline-primary" style="width: 150px; border:none; text-align: left">Weekly Stream</button>
                     </li>
-                    <li>                        
-                        <button type="button" class="btn btn-outline-primary" style="width: 150px; border:none; text-align: left;">Login</button>
+                    <li>
+                        <button type="button" class="btn btn-outline-primary"  style="width: 150px; border:none; text-align: left">Live Stream</button>
                     </li>
                     <li>
-                        <div style="width: 200px;">
-                            <button style="color:white; background-color: gold; width: 30px; height: 30px;"><i class="fa fa-search" aria-hidden="true"></i></button>
-                            <input id ="search" type="text" name="search" placeholder="Search.." style="color: black;">       
-                        <div>                     
+                        <div class="input-group">
+                            <input class="form-control input-sm" id="inputlg" type="text">
+                            <div class="input-group-btn">
+                                <button style="font-size:20px; color:white; background-color: black;"><i class="fa fa-search"></i></button>
+                            </div>
+                          </div>
                     </li>
                 </ul>
                 </div> <!-- navbar-collapse.// -->

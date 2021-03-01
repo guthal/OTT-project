@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+	<!-- stylesheet css -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/nivo-lightbox.css">
+	<link rel="stylesheet" href="css/nivo_themes/default/default.css">
+	<link rel="stylesheet" href="css/templatemo-style.css">
+	<!-- google web font css -->
+	<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+
+    <style>
+
+
+        .smart-scroll{
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 1030;
+        }
+        .scrolled-down{
+            transform:translateY(-100%); transition: all 0.3s ease-in-out;
+        }
+        .scrolled-up{
+            transform:translateY(0); transition: all 0.3s ease-in-out;
+        }
+
+        #poster{
+            background-image: url("images/flash.jpg"); /* The image used */
+            height: 100%; /* You must set a specified height */
+            width: 100%;
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            background-size: contain; /* Resize the background image to cover the entire container */ 
+            border: 1px solid white;
+
+        }
+
+
+
+    </style>
+
+    <title>Weekly Stream</title>
+</head>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row" id = "intro" style=" color: white;">
+        <nav class="navbar smart-scroll navbar-expand-sm navbar-dark bg-dark">
+            <img src = "" height="50">BRAND
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="main_nav">
+            <ul class="nav navbar-nav navbar-right">
+                <li>                        
+                    <button type="button" class="btn btn-outline-primary" style="width: 100px; border:none; text-align: left;">Home</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-outline-primary" style="width: 100px; border:none; text-align: left">Buy Rent</button>
+                </li>
+                <li>                        
+                    <button type="button" class="btn btn-outline-primary" style="width: 150px; border:none; text-align: left">Weekly Stream</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-outline-primary"  style="width: 100px; border:none; text-align: left">Live Stream</button>
+                </li>
+                <li>          
+                    <div class="dropdown" style="width: 100px;  text-align: left; padding-left: 15px;">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-user" aria-hidden="true" style = "font-size: 20px;"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">User</a>
+                        <a class="dropdown-item" href="#">Logout</a>
+                        <a class="dropdown-item" href="#">Settings</a>
+                        </div>
+                    </div>                                 
+                </li>
+            </ul>
+            </div> <!-- navbar-collapse.// -->
+        </nav>
+    </div>
+
+
+
+    <div class = "row">
+        <div class="col-sm-8 mt-4" style="width: 500px;">
+            <div class = "row pt-5 pl-3">
+                <div class="col-sm-12 ">
+                    <h2>Movie-Name</h2>
+                </div>
+                <div class="col-sm-2">
+                    <h5> Rating: </h5>
+                        <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i>                    
+                </div>
+                <div class="col-sm-2">
+                    <h5>Duration 2Hrs:14Mins</h5>
+                </div>
+                <div class="col-sm-2">
+                    <h5>Genre : Drama</h5>
+                </div>
+                <div class="col-sm-4">
+                    <h5>Age Restricted : No</h5>
+                </div>
+            </div>
+            <div class = "row pt-5 pl-3">
+                <div class="col-sm-4 ">
+                    <button type="button" class="btn btn-outline-primary" style="width: 150px; ">Watch Trailer</button>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-outline-primary" style="width: 150px; ">Buy Ticker</button>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-outline-primary" style="width: 150px; ">Add Watchlist</button>
+                </div>
+            </div>
+
+            <div class = "row pt-5 pl-3">
+                <div class="col-sm-10  d-flex flex-wrap align-content-center justify-content-center">
+                    No man's land is land that is unoccupied or is under dispute between parties who leave it unoccupied out of fear or uncertainty. 
+                    When a vigilante border patrol turns fatal, a man flees on horseback to Mexico, seeking forgiveness from the victim's father.
+                </div>
+            </div>
+
+            <div class="container-fluid">
+                <div class = row>
+                    <div class="col-sm-12  mt-3 d-flex flex-wrap align-content-center justify-content-center">
+                        <div class="col-sm-5 mt-2 ">
+                            <i id = "play" class="fa fa-play-circle" style="font-size:50px;color:gold;"><h4>PLAY</h4></i> 
+                        </div>
+                        <div class="col-sm-5 mt-2 ">
+                            <i class="fa fa-download" aria-hidden="true" style="font-size:50px;color:gold;"><h4> SAVE</h4></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class = "row pt-5 pl-3">
+                <div class="col-sm-10  d-flex flex-wrap align-content-center justify-content-center">
+                    <table class="table table-dark table-hover">
+                        <tr>
+                            <td>Director</td>
+                            <td>Studio : IFC Films</td>
+                        </tr>
+                        <tr>
+                            <td>Studio</td>
+                            <td>IFC Studios</td>
+                        </tr>
+                        <tr>
+                            <td>Starring</td>
+                            <td>Moe, Lana, Alex</td>
+                        </tr>
+                        <tr>
+                            <td>Languages</td>
+                            <td>English</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-sm-4 mt-3">
+            <div id = "poster" class = " d-flex flex-wrap align-content-center justify-content-center">
+                <i id = "play" class="fa fa-play-circle" style="font-size:150px;color:gold;">
+                    <h1 class = "d-flex flex-wrap align-content-center justify-content-center">PLAY</h1>
+                </i> 
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+<!-- footer section -->
+<footer>
+	<div class="container">
+		<div class="row">
+        
+			<div class="col-sm-5">
+				<div  class="img-responsive" alt="logo">
+                    <h1>LOGO</h1>
+				<p>Bangalore, India</p>
+				<p><i class="fa fa-phone"></i>+91 XXX-XXX-XXXX</p>
+				<p><i class="fa fa-envelope-o"></i>myOTTApp@gmail.com</p>
+			</div>
+
+            <div class="copyright">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>Copyright © 2021 MyOTTApp</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+		</div>
+	</div>
+</footer>
+
+
+
+
+<script>
+
+    // add padding top to show content behind navbar
+    $('body').css('padding-top', $('.navbar').outerHeight() + 'px')
+    
+    // detect scroll top or down
+    if ($('.smart-scroll').length > 0) { // check if element exists
+        var last_scroll_top = 0;
+        $(window).on('scroll', function() {
+            scroll_top = $(this).scrollTop();
+            if(scroll_top < last_scroll_top) {
+                $('.smart-scroll').removeClass('scrolled-down').addClass('scrolled-up');
+            }
+            else {
+                $('.smart-scroll').removeClass('scrolled-up').addClass('scrolled-down');
+            }
+            last_scroll_top = scroll_top;
+        });
+    }
+    
+</script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
