@@ -1,0 +1,61 @@
+<%- include("partials/header"); -%>
+<body>
+  <br>
+  
+  <form action="/upload/:creatorId" method="POST">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="ticket">Price of the ticket</label>
+            <input type="number" class="form-control" placeholder="Ticket price" name="price" required>
+          </div>
+          <div class="form-group col-md-6">
+            <!-- <label for="ticket">Creator Id</label> -->
+            <input type="hidden" class="form-control" placeholder="Ticket price" name="creatorId" required value="<%=content%>">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" placeholder="Title of the content" name="title" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description">description of the content</label>
+          <textarea class="form-control" name="description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="weeks">number of weeks to keep live</label>
+          <input type="number" class="form-control" placeholder="Apartment, studio, or floor" name="weeks">
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="genre">Genre of the content</label>
+            <select class="form-control" name="genre" required>
+              <option selected>Action</option>
+              <option>Comedy</option>
+              <option>Thriller</option>
+              <option>Drama</option>
+              <option>Romance</option>
+              <option>Fiction</option>
+              <option>Experimental</option>
+              <option>Horror</option>
+              <option>Historical</option>
+              <option>Sci-Fi</option>
+              <option>Fantasy</option>
+              <option>Crime</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="gridCheck">
+            <label class="form-check-label" for="gridCheck">
+              Check me out
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+      </form>
+      <script>
+        const 
+      </script>
+</body>
+<%- include("partials/footer"); -%>

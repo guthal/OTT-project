@@ -1,0 +1,16 @@
+<%- include("partials/header"); -%>
+<body>
+    <%  creators.forEach(function(creator){ %>
+
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title" href="/profile/<%=creator.creatorId%>"><%=creator.creator%></h5>
+              <h6 class="card-subtitle mb-2 text-muted"><%=creator.email%></h6>
+              <a href="/upload/week/<%=creator.creatorId%>" class="card-link">Weekly-streams</a>
+              <a href="/upload/br/<%=creator.creatorId%>" class="card-link">BUY/RENT</a>
+            </div>
+          </div>   
+    
+    <% }) %>
+</body>
+<%- include("partials/footer"); -%>
