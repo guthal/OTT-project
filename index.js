@@ -52,7 +52,8 @@ const creatorSchema = new Schema({
     state:{type:String,required:true},
     zip:{type:Number,required:true},
     date:{type:Date,required:false},
-    history:[{type:String,ref:"content"}]
+    history:[{type:String,ref:"content"}],
+    utype:{type:Number,required:true}
 });
 // const secret =process.env.SECRET;
 // creatorSchema.plugin(encrypt,{secret:secret});
