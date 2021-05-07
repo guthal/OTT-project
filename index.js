@@ -52,7 +52,7 @@ const creatorSchema = new Schema({
     state:{type:String,required:true},
     zip:{type:Number,required:true},
     date:{type:Date,required:false},
-    history:[{type:String,ref:"content"}],
+    history:[{type:String,ref:"Content"}],
     utype:{type:Number,required:true}
 });
 // const secret =process.env.SECRET;
@@ -62,9 +62,22 @@ const Creator = mongoose.model("Creator", creatorSchema);
 
 app.get("/contents",(req,res)=>{
     Content.find({},(err,contents)=>{
-        res.send({
-            contents
-        })
+        //passing the whole data as response need to see if it's good practice
+        const data={
+            'status':200,
+            'values':contents.map((val)=>{
+                return{
+                    id:val.contentId,
+                    title:val.title,
+                    desc:val.description,
+                    type:val.type,
+                    price:val.price,
+                    genre:val.genre
+                }
+            })
+        }
+        res.type('json');
+        res.send(data);
     });
 });
 
@@ -80,9 +93,28 @@ app.get("/contents/:contentId",(req,res)=>{
         })
     })
 });
-
+// test with this user f524e638-0c83-42f8-b954-0da734c41fa5
+//passing the whole content as response need to see how to send only the reqired ones
 app.get("/history/:creatorId",(req,res)=>{
-
+    Creator.find({creatorId:req.params.creatorId},(err,history)=>{
+       const contents=history[0].history
+        Content.find({contentId: contents},(err,content)=>{
+            const data={
+                'status':200,
+                'values':content.map((val)=>{
+                    return{
+                        id:val.contentId,
+                        title:val.title,
+                        desc:val.description,
+                        type:val.type,
+                        price:val.price
+                    }
+                })
+            }
+            res.type('json');
+            res.send(data);
+            });
+        })
 });
 
 app.get("/upload",(req,res)=>{
@@ -185,7 +217,8 @@ app.post("/fm/register",(req,res)=>{
      city:req.body.city,
      state:req.body.state,
      zip:req.body.zip,
-     date:Date.now()
+     date:Date.now(),
+     utype:1
     })
     creator.save(function(err){
         if (!err){
