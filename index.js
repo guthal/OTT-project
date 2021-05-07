@@ -18,6 +18,26 @@ app.use(express.json());
 mongoose.connect(`mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`, {useNewUrlParser: true,useUnifiedTopology: true});
 // mongodb://localhost:27017/contentUpload
 
+const contentSchema=new Schema({
+    contentId:{type:String,required:true,unique:true},
+    creatorId:{type:String,required:true},
+    price:{
+        buy:Number,
+        rent:Number,
+        ticket:Number
+    },
+    title:{type:String,required:true},
+    description:{type:String,required:true},
+    weeks:Number,
+    type:{type:String,required:true},
+    genre:{type:String,required:true},
+    tag:{type:String,required:true},
+    thumbnail:String,
+    start:Date,
+    end:String
+});
+//make tag required later in production
+const Content = mongoose.model("Content",contentSchema);
 
 //creator info
 
@@ -31,7 +51,8 @@ const creatorSchema = new Schema({
     city:String,
     state:{type:String,required:true},
     zip:{type:Number,required:true},
-    date:{type:Date,required:false}
+    date:{type:Date,required:false},
+    history:[{type:String,ref:"content"}]
 });
 // const secret =process.env.SECRET;
 // creatorSchema.plugin(encrypt,{secret:secret});
@@ -39,13 +60,28 @@ const creatorSchema = new Schema({
 const Creator = mongoose.model("Creator", creatorSchema);
 
 app.get("/contents",(req,res)=>{
-    res.send({
-        message:"success"
+    Content.find({},(err,contents)=>{
+        res.send({
+            contents
+        })
+    });
+});
+
+// render content description, title button w.r.t to the business logic 
+app.get("/contents/:contentId",(req,res)=>{
+    Content.find({contentId:req.params.contentId},(err,content)=>{
+        const {title,description,type,price}=content[0];
+        res.send({
+            title,
+            description,
+            type,
+            price
+        })
     })
 });
-// render content description, title button w.r.t to the business logic 
-app.get("/contents/:contentId",(res,req)=>{
-    
+
+app.get("/history/:creatorId",(req,res)=>{
+
 });
 
 app.get("/upload",(req,res)=>{
@@ -58,24 +94,6 @@ app.get("/upload",(req,res)=>{
 
 //weekly streams schema
 
-const contentSchema=new Schema({
-    contentId:{type:String,required:true,unique:true},
-    creatorId:{type:String,required:true},
-    buy:Number,
-    rent:Number,
-    ticket:Number,
-    title:{type:String,required:true},
-    description:{type:String,required:true},
-    weeks:Number,
-    type:{type:String,required:true},
-    genre:{type:String,required:true},
-    tag:{type:String,required:true},
-    thumbnail:String,
-    start:Date,
-    end:String
-});
-//make tag required later in production
-const Content = mongoose.model("Content",contentSchema);
 
 app.get("/upload/content/:creatorId",(req,res)=>{
     Creator.findOne({creatorId: req.params.creatorId}, function(err, content){
