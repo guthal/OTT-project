@@ -14,8 +14,8 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-
-mongoose.connect("mongodb+srv://vishveshwara:Phdcollector123@cluster0.sesb2.mongodb.net/avscope?retryWrites=true&w=majority", {useNewUrlParser: true,useUnifiedTopology: true});
+app.use(express.json());
+mongoose.connect(`mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`, {useNewUrlParser: true,useUnifiedTopology: true});
 // mongodb://localhost:27017/contentUpload
 
 
@@ -30,7 +30,6 @@ const creatorSchema = new Schema({
     office:String,
     city:String,
     state:{type:String,required:true},
-    weekly: [{ type: Schema.Types.ObjectId, ref: 'Weekly' }],
     zip:{type:Number,required:true},
     date:{type:Date,required:false}
 });
@@ -39,15 +38,15 @@ const creatorSchema = new Schema({
 //schemas constructors
 const Creator = mongoose.model("Creator", creatorSchema);
 
-const audienceSchema= new Schema({
-    email:{ type: String, required: true, unique: true }
-})
-
-const Audience=mongoose.model("Audience",audienceSchema);
-
-app.get("/",(req,res)=>{
-    res.send("landing page")
-})
+app.get("/contents",(req,res)=>{
+    res.send({
+        message:"success"
+    })
+});
+// render content description, title button w.r.t to the business logic 
+app.get("/contents/:contentId",(res,req)=>{
+    
+});
 
 app.get("/upload",(req,res)=>{
     Creator.find({}, function(err, creators){
@@ -71,6 +70,7 @@ const contentSchema=new Schema({
     type:{type:String,required:true},
     genre:{type:String,required:true},
     tag:{type:String,required:true},
+    thumbnail:String,
     start:Date,
     end:String
 });
