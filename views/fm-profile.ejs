@@ -1,0 +1,23 @@
+<%- include("partials/header"); -%>
+<body>
+    <%  weeks.forEach(function(weekly){ %>
+    <div class="card" style="width: 18rem;">
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><%=weekly.title%></h5>
+          <p class="card-text"><%=weekly.description%></p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Ticket:<%=weekly.price%></li>
+          <li class="list-group-item">No of weeks:<%=weekly.weeks%></li>
+          <li class="list-group-item">Start date:<%=weekly.start%></li>
+          <li class="list-group-item">End date:<%=weekly.start%></li>
+        </ul>
+        <div class="card-body">
+          <a href="#" class="card-link">Card link</a>
+          <a href="#" class="card-link">Another link</a>
+        </div>
+      </div>
+      <%})%>
+</body>
+<%- include("partials/footer"); -%>
