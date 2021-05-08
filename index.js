@@ -80,7 +80,7 @@ app.get("/contents", (req, res) => {
       return {
         id: val.contentId,
         title: val.title,
-        desc: val.description,
+        description: val.description,
         type: val.type,
         price: val.price,
         genre: val.genre,
