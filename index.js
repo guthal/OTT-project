@@ -76,7 +76,7 @@ const Creator = mongoose.model("Creator", creatorSchema);
 
 app.get("/contents", (req, res) => {
   Content.find({}, (err, contents) => {
-    if (err || !content)
+    if (err || !contents)
       res.status(404).send({ code: 404, message: "Resource not found" });
 
     //passing the whole data as response need to see if it's good practice
@@ -99,7 +99,7 @@ app.get("/contents", (req, res) => {
 // render content description, title button w.r.t to the business logic
 app.get("/contents/:contentId", (req, res) => {
   Content.find({ contentId: req.params.contentId }, (err, content) => {
-    if (err || !(contentId && contentId[0]))
+    if (err || !(content && content[0]))
       res.status(404).send({ code: 404, message: "Resource not found" });
 
     const {
@@ -314,6 +314,7 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.listen(3000, function () {
-  console.log("Server started on port 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, function () {
+  console.log(`Server started on port ${PORT}.. `);
 });
