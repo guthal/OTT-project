@@ -77,7 +77,7 @@ const Creator = mongoose.model("Creator", creatorSchema);
 app.get("/contents", (req, res) => {
   Content.find({}, (err, contents) => {
     if (err || !contents)
-      res.status(404).send({ code: 404, message: "Resource not found" });
+      return res.status(404).send({ code: 404, message: "Resource not found" });
 
     //passing the whole data as response need to see if it's good practice
     const data = contents.map((val) => {
@@ -100,7 +100,7 @@ app.get("/contents", (req, res) => {
 app.get("/contents/:contentId", (req, res) => {
   Content.find({ contentId: req.params.contentId }, (err, content) => {
     if (err || !(content && content[0]))
-      res.status(404).send({ code: 404, message: "Resource not found" });
+      return res.status(404).send({ code: 404, message: "Resource not found" });
 
     const {
       contentId,
@@ -127,22 +127,28 @@ app.get("/contents/:contentId", (req, res) => {
 app.get("/history/:creatorId", (req, res) => {
   Creator.find({ creatorId: req.params.creatorId }, (err, history) => {
     if (err || !(history && history[0]))
-      res.status(404).send({ code: 404, message: "Resource not found" });
+      return res.status(404).send({ code: 404, message: "Resource not found" });
 
+    const historyData = [];
     const contents = history[0].history;
+    console.log(contents);
     Content.find({ contentId: contents }, (err, content) => {
-      const data = content.map((val) => {
-        return {
+      if (err || !history)
+        return res
+          .status(404)
+          .send({ code: 404, message: "Resource not found" });
+
+      content.map((val) => {
+        historyData.push({
           id: val.contentId,
           title: val.title,
           desc: val.description,
           type: val.type,
           price: val.price,
           thumbnail: val.thumbnail,
-        };
+        });
       });
-      res.send(data);
-    });
+    }).then(() => res.send(historyData));
   });
 });
 
@@ -172,11 +178,11 @@ app.get("/profile/:creatorId", (req, res) => {
   });
 });
 
-app.post("/upload/week/:creatorId", (req, res) => {
+app.post("/upload/content/:creatorId", (req, res) => {
   // console.log(req.path+" this is the creator Id");
 
   const d = new Date();
-  d.setDate(d.getDate() + req.body.weeks * 7);
+  d.setDate(d.getDate() + req.body.hours * 7);
   const endDate = d.toString;
   // console.log(d+" value of d");
   // console.log(Date(endDate.toString())+" value of end date");
@@ -192,31 +198,6 @@ app.post("/upload/week/:creatorId", (req, res) => {
     genre: req.body.genre,
     start: Date.now(),
     end: endDate.toString(),
-    tag: req.body.tag,
-    type: req.body.type,
-  });
-  content.save((err) => {
-    console.log("creatorId is: " + req.body.creatorId);
-    if (err) {
-      console.log(err);
-    } else {
-      res.redirect("/");
-    }
-  });
-});
-
-app.get("/upload/br/:creatorId", (req, res) => {});
-
-app.post("/upload/br/:creatorId", (req, res) => {
-  const content = new Content({
-    contentId: v4(),
-    creatorId: req.body.creatorId,
-    buy: req.body.buy,
-    rent: req.body.rent,
-    title: req.body.title,
-    description: req.body.description,
-    genre: req.body.genre,
-    start: Date.now(),
     tag: req.body.tag,
     type: req.body.type,
   });
