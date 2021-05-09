@@ -251,6 +251,7 @@ app.get("/history/:userId", (req, res) => {
         purchaseData.push({
           purchaseDate: val.date,
           contentId: val.contentId,
+          purchaseId: val.payId,
           purchaseType: val.type,
           purchasePrice: val.amount,
         });
@@ -268,7 +269,7 @@ app.get("/history/:userId", (req, res) => {
       content.map(val => {
         contentData.push({
           contentId: val.contentId,
-          title: val.title,
+          contentTitle: val.title,
           thumbnail: val.thumbnail,
         });
       });
