@@ -220,29 +220,29 @@ app.get("/contents/:contentId", (req, res) => {
     });
   });
 });
-// test with this user f524e638-0c83-42f8-b954-0da734c41fa5
-//passing the whole content as response need to see how to send only the reqired ones
-app.get("/history/:userId", (req, res) => {
+
+const getUserPurchase = (req, res, contentId) => {
   const contentData = [];
   const purchaseData = [];
-  let contents;
-  User.find({ userId: req.params.userId }, (err, user) => {
+  let contentIds;
+  return User.find({ userId: req.params.userId }, (err, user) => {
     if (err || !(user && user[0]))
       return res.status(404).send({ code: 404, message: "User not found" });
   })
     .then(user => {
-      contents = user[0].history;
+      contentIds = contentId ? [contentId] : user[0].history;
     })
     .then(() => {
-      console.log("CONTENT QUERY: ", contents);
       return Payment.find(
-        { userId: req.params.userId, contentId: contents },
+        {
+          userId: req.params.userId,
+          contentId: contentIds,
+        },
         (err, purchase) => {
           if (err || !purchase)
             return res
               .status(404)
               .send({ code: 404, message: "Purchase date not available" });
-          console.log("PURCHASES: ", purchase);
         }
       );
     })
@@ -258,7 +258,7 @@ app.get("/history/:userId", (req, res) => {
       });
     })
     .then(() => {
-      return Content.find({ contentId: contents }, (err, content) => {
+      return Content.find({ contentId: contentIds }, (err, content) => {
         if (err || !content)
           return res
             .status(404)
@@ -288,6 +288,16 @@ app.get("/history/:userId", (req, res) => {
       });
     })
     .then(purchasedContentData => res.status(200).send(purchasedContentData));
+};
+
+// test with this user f524e638-0c83-42f8-b954-0da734c41fa5
+//passing the whole content as response need to see how to send only the reqired ones
+app.get("/user-purchase/:userId", (req, res) => {
+  getUserPurchase(req, res);
+});
+
+app.get("/user-purchase/:userId/contents/:contentId", (req, res) => {
+  getUserPurchase(req, res, req.params.contentId);
 });
 
 app.get("/upload", (req, res) => {
