@@ -60,9 +60,8 @@ const contentSchema = new Schema({
   isLandscape: Boolean,
   contentSeriesInfo: {
     seasonID: String,
+    seasonNo: String,
     episodeNo: Number,
-    prevEpisodeContentID: String,
-    nextEpisodeContentID: String,
   },
 });
 //make tag required later in production
@@ -150,7 +149,7 @@ app.get("/contents/series/:seriesId", (req, res) => {
   });
 });
 
-app.get("/contents", (req, res) => {
+app.get("/contents", (_req, res) => {
   Content.find({}, (err, contents) => {
     if (err || !contents)
       return res.status(404).send({ code: 404, message: "Resource not found" });
