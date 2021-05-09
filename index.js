@@ -280,6 +280,7 @@ app.get("/history/:userId", (req, res) => {
         );
 
         return {
+          userId: req.params.userId,
           ...data,
           ...purchaseContent,
         };
