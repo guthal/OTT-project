@@ -194,14 +194,14 @@ app.get("/history/:userId", (req, res) => {
 
     const historyData = [];
     const contents = history[0].history;
-    console.log(contents);
+    // console.log(contents);
     const purchaseDate=[];
     Payment.find({userId:req.params.userId,contentId:contents},(err,purchase)=>{
       if (err || !history)
         return res
           .status(404)
           .send({ code: 404, message: "Purchase date not available" });
-          console.log(purchase);
+          // console.log(purchase);
       purchase.map((val)=>{
         purchaseDate.push({
           date:val.date,
