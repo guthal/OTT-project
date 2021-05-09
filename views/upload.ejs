@@ -1,13 +1,13 @@
 <%- include("partials/header"); -%>
 <body>
-    <%  creators.forEach(function(creator){ %>
+    <%  users.forEach(function(user){ %>
 
         <div class="card" style="width: 18rem;">
             <div class="card-body">
-              <h5 class="card-title" href="/profile/<%=creator.creatorId%>"><%=creator.creator%></h5>
-              <h6 class="card-subtitle mb-2 text-muted"><%=creator.email%></h6>
-              <a href="/upload/week/<%=creator.creatorId%>" class="card-link">Weekly-streams</a>
-              <a href="/upload/br/<%=creator.creatorId%>" class="card-link">BUY/RENT</a>
+              <h5 class="card-title" href="/profile/<%=user.userId%>"><%=user.user%></h5>
+              <h6 class="card-subtitle mb-2 text-muted"><%=user.email%></h6>
+              <a href="/upload/week/<%=user.userId%>" class="card-link">Weekly-streams</a>
+              <a href="/upload/br/<%=user.userId%>" class="card-link">BUY/RENT</a>
             </div>
           </div>   
     

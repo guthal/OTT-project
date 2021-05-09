@@ -28,9 +28,13 @@ app.use(function (req, res, next) {
   next();
 });
 
+
+
+
+
 const contentSchema = new Schema({
   contentId: { type: String, required: true, unique: true },
-  creatorId: { type: String, required: true },
+  userId: { type: String, required: true },
   price: {
     buy: Number,
     rent: Number,
@@ -49,16 +53,57 @@ const contentSchema = new Schema({
     pic2030: { type: String, required: true },
     picsq: { type: String, required: true },
   },
+  seriesID: {
+    type: String,
+    ref: 'Series'
+  },
+  duration:Number, 
+  ratings:Number, 
+  contentLanguage:String, 
+  ageRestriction:String,
+  isLandscape: Boolean,
+  contentSeriesInfo: 
+              { 
+                seasonID: String,
+                episodeNo: Number,
+                prevEpisodeContentID: String,
+                nextEpisodeContentID: String 
+              }
 });
 //make tag required later in production
 const Content = mongoose.model("Content", contentSchema);
+const seriesSchema= new Schema({
+        seriesID:String,
+        seriesName:String,
+        totalSeasons:Number,
+        cast:[
+          {
+            role:String,
+            name:String
+          }
+        ],
+        ratings:Number,
+        contentLanguage:String, 
+        ageRestriction:String,
+        genres:String,
+        seasons :[
+          {
+            seasonID:String,
+            seasonNo:Number,
+            type:String,
+            price:Number,
+          }
+        ]
+})
 
-//creator info
+const Series = mongoose.model("Series", seriesSchema);
 
-const creatorSchema = new Schema({
-  creatorId: String,
+//user info
+
+const userSchema = new Schema({
+  userId: String,
   email: { type: String, required: true, unique: true },
-  creator: { type: String, required: true, unique: true },
+  user: { type: String, required: true, unique: true },
   address: { type: String, required: true },
   phone: { type: Number, unique: true },
   office: String,
@@ -70,9 +115,20 @@ const creatorSchema = new Schema({
   utype: { type: Number, required: true },
 });
 // const secret =process.env.SECRET;
-// creatorSchema.plugin(encrypt,{secret:secret});
+// userSchema.plugin(encrypt,{secret:secret});
 //schemas constructors
-const Creator = mongoose.model("Creator", creatorSchema);
+const User = mongoose.model("User", userSchema);
+
+const paymentSchema=new Schema({
+  payId:String,
+  contentId:{ type: String, ref: "Content" },
+  userId:{ type: String, ref: "User" },
+  amount:{ type: Number, ref: "Content" },
+  date:Date,
+  type:{ type: String, ref: "Content" }
+});
+
+const Payment=mongoose.model("Payment",paymentSchema);
 
 app.get("/contents", (req, res) => {
   Content.find({}, (err, contents) => {
@@ -109,6 +165,13 @@ app.get("/contents/:contentId", (req, res) => {
       type,
       price,
       thumbnail,
+      duration,
+      rating,
+      contentLanguage,
+      ageRestriction,
+      genres,
+      cast,
+      isLandscape,
       tag,
     } = content[0];
     res.send({
@@ -124,14 +187,28 @@ app.get("/contents/:contentId", (req, res) => {
 });
 // test with this user f524e638-0c83-42f8-b954-0da734c41fa5
 //passing the whole content as response need to see how to send only the reqired ones
-app.get("/history/:creatorId", (req, res) => {
-  Creator.find({ creatorId: req.params.creatorId }, (err, history) => {
+app.get("/history/:userId", (req, res) => {
+  User.find({ userId: req.params.userId }, (err, history) => {
     if (err || !(history && history[0]))
       return res.status(404).send({ code: 404, message: "Resource not found" });
 
     const historyData = [];
     const contents = history[0].history;
     console.log(contents);
+    const purchaseDate=[];
+    Payment.find({userId:req.params.userId,contentId:contents},(err,purchase)=>{
+      if (err || !history)
+        return res
+          .status(404)
+          .send({ code: 404, message: "Purchase date not available" });
+          console.log(purchase);
+      purchase.map((val)=>{
+        purchaseDate.push({
+          date:val.date,
+          content:val.contentId
+        });
+      });
+    });
     Content.find({ contentId: contents }, (err, content) => {
       if (err || !history)
         return res
@@ -145,41 +222,41 @@ app.get("/history/:creatorId", (req, res) => {
           desc: val.description,
           type: val.type,
           price: val.price,
-          thumbnail: val.thumbnail,
+          thumbnail: val.thumbnail
         });
       });
-    }).then(() => res.send(historyData));
+    }).then(() => res.status(200).send({history:historyData,purchase:purchaseDate}));
   });
 });
 
 app.get("/upload", (req, res) => {
-  Creator.find({}, function (err, creators) {
+  User.find({}, function (err, users) {
     res.render("upload", {
-      creators: creators,
+      users: users,
     });
   });
 });
 
 //weekly streams schema
 
-app.get("/upload/content/:creatorId", (req, res) => {
-  Creator.findOne({ creatorId: req.params.creatorId }, function (err, content) {
+app.get("/upload/content/:userId", (req, res) => {
+  User.findOne({ userId: req.params.userId }, function (err, content) {
     res.render("weekly", {
-      content: content.creatorId,
+      content: content.userId,
     });
   });
 });
 
-app.get("/profile/:creatorId", (req, res) => {
-  Content.find({ creatorId: req.params.creatorId }, (err, weeks) => {
+app.get("/profile/:userId", (req, res) => {
+  Content.find({ userId: req.params.userId }, (err, weeks) => {
     res.render("fm-profile", {
       weeks: weeks,
     });
   });
 });
 
-app.post("/upload/content/:creatorId", (req, res) => {
-  // console.log(req.path+" this is the creator Id");
+app.post("/upload/content/:userId", (req, res) => {
+  // console.log(req.path+" this is the user Id");
 
   const d = new Date();
   d.setDate(d.getDate() + req.body.hours * 7);
@@ -190,7 +267,7 @@ app.post("/upload/content/:creatorId", (req, res) => {
 
   const content = new Content({
     contentId: v4(),
-    creatorId: req.body.creatorId,
+    userId: req.body.userId,
     ticket: req.body.ticket,
     title: req.body.title,
     description: req.body.description,
@@ -202,7 +279,7 @@ app.post("/upload/content/:creatorId", (req, res) => {
     type: req.body.type,
   });
   content.save((err) => {
-    console.log("creatorId is: " + req.body.creatorId);
+    console.log("userId is: " + req.body.userId);
     if (err) {
       console.log(err);
     } else {
@@ -216,10 +293,10 @@ app.get("/fm/register", function (req, res) {
 });
 
 app.post("/fm/register", (req, res) => {
-  const creator = new Creator({
-    creatorId: v4(),
+  const user = new user({
+    userId: v4(),
     email: req.body.email,
-    creator: req.body.creator,
+    user: req.body.user,
     phone: req.body.phone,
     address: req.body.address,
     office: req.body.office || null,
@@ -229,7 +306,7 @@ app.post("/fm/register", (req, res) => {
     date: Date.now(),
     utype: 1,
   });
-  creator.save(function (err) {
+  user.save(function (err) {
     if (!err) {
       res.redirect("/contents");
     } else {
