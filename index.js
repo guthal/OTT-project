@@ -28,10 +28,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-
-
-
-
 const contentSchema = new Schema({
   contentId: { type: String, required: true, unique: true },
   userId: { type: String, required: true },
@@ -55,46 +51,46 @@ const contentSchema = new Schema({
   },
   seriesID: {
     type: String,
-    ref: 'Series'
+    ref: "Series",
   },
-  duration:Number, 
-  ratings:Number, 
-  contentLanguage:String, 
-  ageRestriction:String,
+  duration: Number,
+  ratings: Number,
+  contentLanguage: String,
+  ageRestriction: String,
   isLandscape: Boolean,
-  contentSeriesInfo: 
-              { 
-                seasonID: String,
-                episodeNo: Number,
-                prevEpisodeContentID: String,
-                nextEpisodeContentID: String 
-              }
+  contentSeriesInfo: {
+    seasonID: String,
+    episodeNo: Number,
+    prevEpisodeContentID: String,
+    nextEpisodeContentID: String,
+  },
 });
 //make tag required later in production
 const Content = mongoose.model("Content", contentSchema);
-const seriesSchema= new Schema({
-        seriesID:String,
-        seriesName:String,
-        totalSeasons:Number,
-        cast:[
-          {
-            role:String,
-            name:String
-          }
-        ],
-        ratings:Number,
-        contentLanguage:String, 
-        ageRestriction:String,
-        genres:String,
-        seasons :[
-          {
-            seasonID:String,
-            seasonNo:Number,
-            type:String,
-            price:Number,
-          }
-        ]
-})
+
+const seriesSchema = new Schema({
+  seriesID: String,
+  seriesName: String,
+  totalSeasons: Number,
+  cast: [
+    {
+      role: String,
+      name: String,
+    },
+  ],
+  ratings: Number,
+  contentLanguage: String,
+  ageRestriction: String,
+  genres: String,
+  seasons: [
+    {
+      seasonID: String,
+      seasonNo: Number,
+      type: String,
+      price: Number,
+    },
+  ],
+});
 
 const Series = mongoose.model("Series", seriesSchema);
 
@@ -119,16 +115,40 @@ const userSchema = new Schema({
 //schemas constructors
 const User = mongoose.model("User", userSchema);
 
-const paymentSchema=new Schema({
-  payId:String,
-  contentId:{ type: String, ref: "Content" },
-  userId:{ type: String, ref: "User" },
-  amount:{ type: Number, ref: "Content" },
-  date:Date,
-  type:{ type: String, ref: "Content" }
+const paymentSchema = new Schema({
+  payId: String,
+  contentId: { type: String, ref: "Content" },
+  userId: { type: String, ref: "User" },
+  amount: { type: Number, ref: "Content" },
+  date: Date,
+  type: { type: String, ref: "Content" },
 });
 
-const Payment=mongoose.model("Payment",paymentSchema);
+const Payment = mongoose.model("Payment", paymentSchema);
+
+// Get contents of a particular Series
+app.get("/contents/series/:seriesId", (req, res) => {
+  Content.find({ seriesID: req.params.seriesId }, (err, seriesContents) => {
+    if (err || !seriesContents)
+      return res.status(404).send({ code: 404, message: "Resource not found" });
+
+    //passing the whole data as response need to see if it's good practice
+    const data = seriesContents.map((val) => {
+      return {
+        id: val.contentId,
+        title: val.title,
+        description: val.description,
+        type: val.type,
+        price: val.price,
+        genre: val.genre,
+        tag: val.tag,
+        thumbnail: val.thumbnail,
+        contentSeriesInfo: val.contentSeriesInfo,
+      };
+    });
+    res.send(data);
+  });
+});
 
 app.get("/contents", (req, res) => {
   Content.find({}, (err, contents) => {
@@ -146,6 +166,7 @@ app.get("/contents", (req, res) => {
         genre: val.genre,
         tag: val.tag,
         thumbnail: val.thumbnail,
+        seriesID: val.seriesID,
       };
     });
     res.send(data);
@@ -181,6 +202,13 @@ app.get("/contents/:contentId", (req, res) => {
       type,
       price,
       thumbnail,
+      duration,
+      rating,
+      contentLanguage,
+      ageRestriction,
+      genres,
+      cast,
+      isLandscape,
       tag,
     });
   });
@@ -195,20 +223,23 @@ app.get("/history/:userId", (req, res) => {
     const historyData = [];
     const contents = history[0].history;
     console.log(contents);
-    const purchaseDate=[];
-    Payment.find({userId:req.params.userId,contentId:contents},(err,purchase)=>{
-      if (err || !history)
-        return res
-          .status(404)
-          .send({ code: 404, message: "Purchase date not available" });
-          console.log(purchase);
-      purchase.map((val)=>{
-        purchaseDate.push({
-          date:val.date,
-          content:val.contentId
+    const purchaseDate = [];
+    Payment.find(
+      { userId: req.params.userId, contentId: contents },
+      (err, purchase) => {
+        if (err || !history)
+          return res
+            .status(404)
+            .send({ code: 404, message: "Purchase date not available" });
+        console.log(purchase);
+        purchase.map((val) => {
+          purchaseDate.push({
+            date: val.date,
+            content: val.contentId,
+          });
         });
-      });
-    });
+      }
+    );
     Content.find({ contentId: contents }, (err, content) => {
       if (err || !history)
         return res
@@ -222,10 +253,12 @@ app.get("/history/:userId", (req, res) => {
           desc: val.description,
           type: val.type,
           price: val.price,
-          thumbnail: val.thumbnail
+          thumbnail: val.thumbnail,
         });
       });
-    }).then(() => res.status(200).send({history:historyData,purchase:purchaseDate}));
+    }).then(() =>
+      res.status(200).send({ history: historyData, purchase: purchaseDate })
+    );
   });
 });
 
