@@ -127,49 +127,57 @@ const Payment = mongoose.model("Payment", paymentSchema);
 
 // Get contents of a particular Series
 app.get("/contents/series/:seriesId", (req, res) => {
-  Content.find({ seriesID: req.params.seriesId }, (err, seriesContents) => {
-    if (err || !seriesContents)
-      return res.status(404).send({ code: 404, message: "Resource not found" });
+  Content.find({ seriesID: req.params.seriesId })
+    .sort({ seasonNo: "asc", episodeNo: "asc" })
+    .exec((err, seriesContents) => {
+      if (err || !seriesContents)
+        return res
+          .status(404)
+          .send({ code: 404, message: "Resource not found" });
 
-    //passing the whole data as response need to see if it's good practice
-    const data = seriesContents.map((val) => {
-      return {
-        id: val.contentId,
-        title: val.title,
-        description: val.description,
-        type: val.type,
-        price: val.price,
-        genre: val.genre,
-        tag: val.tag,
-        thumbnail: val.thumbnail,
-        contentSeriesInfo: val.contentSeriesInfo,
-      };
+      //passing the whole data as response need to see if it's good practice
+      const data = seriesContents.map((val) => {
+        return {
+          id: val.contentId,
+          title: val.title,
+          description: val.description,
+          type: val.type,
+          price: val.price,
+          genre: val.genre,
+          tag: val.tag,
+          thumbnail: val.thumbnail,
+          contentSeriesInfo: val.contentSeriesInfo,
+        };
+      });
+      res.send(data);
     });
-    res.send(data);
-  });
 });
 
 app.get("/contents", (_req, res) => {
-  Content.find({}, (err, contents) => {
-    if (err || !contents)
-      return res.status(404).send({ code: 404, message: "Resource not found" });
+  Content.find({})
+    .sort({ title: "asc" })
+    .exec((err, contents) => {
+      if (err || !contents)
+        return res
+          .status(404)
+          .send({ code: 404, message: "Resource not found" });
 
-    //passing the whole data as response need to see if it's good practice
-    const data = contents.map((val) => {
-      return {
-        id: val.contentId,
-        title: val.title,
-        description: val.description,
-        type: val.type,
-        price: val.price,
-        genre: val.genre,
-        tag: val.tag,
-        thumbnail: val.thumbnail,
-        seriesID: val.seriesID,
-      };
+      //passing the whole data as response need to see if it's good practice
+      const data = contents.map((val) => {
+        return {
+          id: val.contentId,
+          title: val.title,
+          description: val.description,
+          type: val.type,
+          price: val.price,
+          genre: val.genre,
+          tag: val.tag,
+          thumbnail: val.thumbnail,
+          seriesID: val.seriesID,
+        };
+      });
+      res.send(data);
     });
-    res.send(data);
-  });
 });
 
 // render content description, title button w.r.t to the business logic
