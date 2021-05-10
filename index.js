@@ -62,8 +62,7 @@ const contentSchema = new Schema({
     seasonID: String,
     seasonNo: Number,
     episodeNo: Number,
-    prevEpisodeContentId: String,
-    nextEpisodeContentId: String,
+    seriesName:String
   },
 });
 //make tag required later in production
