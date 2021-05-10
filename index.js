@@ -135,21 +135,26 @@ app.get("/contents/series/:seriesId", (req, res) => {
           .status(404)
           .send({ code: 404, message: "Resource not found" });
 
-      //passing the whole data as response need to see if it's good practice
-      const data = seriesContents.map(val => {
+      const data = seriesContents.map((val) => {
         return {
           id: val.contentId,
           title: val.title,
           description: val.description,
           type: val.type,
           price: val.price,
-          genre: val.genre,
           tag: val.tag,
           thumbnail: val.thumbnail,
+          duration: val.duration,
+          rating: val.rating,
+          contentLanguage: val.contentLanguage,
+          ageRestriction: val.ageRestriction,
+          genres: val.genres,
+          cast: val.cast,
+          seriesID: val.seriesID,
           contentSeriesInfo: val.contentSeriesInfo,
         };
       });
-      res.send(data);
+      return res.send(data);
     });
 });
 
@@ -163,7 +168,7 @@ app.get("/contents", (_req, res) => {
           .send({ code: 404, message: "Resource not found" });
 
       //passing the whole data as response need to see if it's good practice
-      const data = contents.map(val => {
+      const data = contents.map((val) => {
         return {
           id: val.contentId,
           title: val.title,
@@ -221,6 +226,7 @@ app.get("/contents/:contentId", (req, res) => {
   });
 });
 
+// Util function
 const getUserPurchase = (req, res, contentId) => {
   const contentData = [];
   const purchaseData = [];
@@ -229,7 +235,7 @@ const getUserPurchase = (req, res, contentId) => {
     if (err || !(user && user[0]))
       return res.status(404).send({ code: 404, message: "User not found" });
   })
-    .then(user => {
+    .then((user) => {
       contentIds = contentId ? [contentId] : user[0].history;
     })
     .then(() => {
@@ -246,8 +252,8 @@ const getUserPurchase = (req, res, contentId) => {
         }
       );
     })
-    .then(purchase => {
-      purchase.map(val => {
+    .then((purchase) => {
+      purchase.map((val) => {
         purchaseData.push({
           purchaseDate: val.date,
           contentId: val.contentId,
@@ -265,8 +271,8 @@ const getUserPurchase = (req, res, contentId) => {
             .send({ code: 404, message: "Content not found" });
       });
     })
-    .then(content => {
-      content.map(val => {
+    .then((content) => {
+      content.map((val) => {
         contentData.push({
           contentId: val.contentId,
           contentTitle: val.title,
@@ -275,9 +281,9 @@ const getUserPurchase = (req, res, contentId) => {
       });
     })
     .then(() => {
-      return purchaseData.map(data => {
+      return purchaseData.map((data) => {
         const purchaseContent = contentData.find(
-          content => content.contentId === data.contentId
+          (content) => content.contentId === data.contentId
         );
 
         return {
@@ -287,7 +293,7 @@ const getUserPurchase = (req, res, contentId) => {
         };
       });
     })
-    .then(purchasedContentData => res.status(200).send(purchasedContentData));
+    .then((purchasedContentData) => res.status(200).send(purchasedContentData));
 };
 
 // test with this user f524e638-0c83-42f8-b954-0da734c41fa5
@@ -349,7 +355,7 @@ app.post("/upload/content/:userId", (req, res) => {
     tag: req.body.tag,
     type: req.body.type,
   });
-  content.save(err => {
+  content.save((err) => {
     console.log("userId is: " + req.body.userId);
     if (err) {
       console.log(err);
@@ -394,7 +400,7 @@ app.post("/register", (req, res) => {
   const audience = new Audience({
     email: req.body.email,
   });
-  audience.save(err => {
+  audience.save((err) => {
     if (err) {
       console.log(err);
     } else {
