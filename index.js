@@ -127,8 +127,26 @@ const paymentSchema = new Schema({
 
 const Payment = mongoose.model("Payment", paymentSchema);
 
+app.get("/series", (_req, res) => {
+  Series.find({}).exec((err, series) => {
+    if (err || !series)
+      return res.status(404).send({ code: 404, message: "Resource not found" });
+
+    return res.send(series);
+  });
+});
+
+app.get("/series/:seriesId", (req, res) => {
+  Series.find({ seriesId: req.params.seriesId }).exec((err, series) => {
+    if (err || !series)
+      return res.status(404).send({ code: 404, message: "Resource not found" });
+
+    res.send(series);
+  });
+});
+
 // Get contents of a particular Series
-app.get("/contents/series/:seriesId", (req, res) => {
+app.get("/series/:seriesId/contents", (req, res) => {
   Content.find({ seriesId: req.params.seriesId })
     .sort({ seasonNo: "asc", episodeNo: "asc" })
     .exec((err, seriesContents) => {
@@ -152,7 +170,7 @@ app.get("/contents/series/:seriesId", (req, res) => {
           ageRestriction: val.ageRestriction,
           genres: val.genres,
           cast: val.cast,
-          seriesID: val.seriesID,
+          seriesId: val.seriesId,
           contentSeriesInfo: val.contentSeriesInfo,
         };
       });
