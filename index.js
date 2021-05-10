@@ -60,6 +60,7 @@ const contentSchema = new Schema({
   isLandscape: Boolean,
   contentSeriesInfo: {
     seasonID: String,
+    seriesName: String,
     seasonNo: Number,
     episodeNo: Number,
     prevEpisodeContentId: String,
@@ -86,8 +87,8 @@ const seriesSchema = new Schema({
   seasons: [
     {
       seasonID: String,
-      thumbnail:String,
-      description:String,
+      thumbnail: String,
+      description: String,
       seasonNo: Number,
       type: String,
       price: Number,
