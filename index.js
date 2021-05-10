@@ -49,7 +49,7 @@ const contentSchema = new Schema({
     pic2030: { type: String, required: true },
     picsq: { type: String, required: true },
   },
-  seriesID: {
+  seriesId: {
     type: String,
     ref: "Series",
   },
@@ -60,15 +60,17 @@ const contentSchema = new Schema({
   isLandscape: Boolean,
   contentSeriesInfo: {
     seasonID: String,
-    seasonNo: String,
+    seasonNo:Number,
     episodeNo: Number,
+    prevEpisodeContentId:String,
+    nextEpisodeContentId:String
   },
 });
 //make tag required later in production
 const Content = mongoose.model("Content", contentSchema);
 
 const seriesSchema = new Schema({
-  seriesID: String,
+  seriesId: String,
   seriesName: String,
   totalSeasons: Number,
   cast: [
@@ -146,7 +148,7 @@ app.get("/contents/series/:seriesId", (req, res) => {
           genre: val.genre,
           tag: val.tag,
           thumbnail: val.thumbnail,
-          contentSeriesInfo: val.contentSeriesInfo,
+          contentSeriesInfo: val.contentSeriesInfo
         };
       });
       res.send(data);
@@ -171,7 +173,8 @@ app.get("/contents", (_req, res) => {
           genre: val.genre,
           tag: val.tag,
           thumbnail: val.thumbnail,
-          seriesID: val.seriesID,
+          seriesId: val.seriesId,
+          contentSeriesInfo:val.contentSeriesInfo
         };
       });
       res.send(data);
@@ -197,8 +200,7 @@ app.get("/contents/:contentId", (req, res) => {
       ageRestriction,
       genres,
       cast,
-      isLandscape,
-      tag,
+      tag
     } = content[0];
     res.send({
       id: contentId,
@@ -213,8 +215,7 @@ app.get("/contents/:contentId", (req, res) => {
       ageRestriction,
       genres,
       cast,
-      isLandscape,
-      tag,
+      tag
     });
   });
 });
