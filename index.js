@@ -83,11 +83,11 @@ const seriesSchema = new Schema({
   contentLanguage: String,
   ageRestriction: String,
   genres: Array,
-  thumbnail:String,
-  description:String,
   seasons: [
     {
       seasonID: String,
+      thumbnail:String,
+      description:String,
       seasonNo: Number,
       type: String,
       price: Number,
