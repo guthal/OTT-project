@@ -353,11 +353,12 @@ app.get("/user-purchase/:userId/contents/:contentId", (req, res) => {
   getUserPurchase(req, res, req.params.contentId);
 });
 
-app.get("/upload", (req, res) => {
+app.get("/creators", (req, res) => {
   User.find({}, function (err, users) {
-    res.render("upload", {
-      users: users,
-    });
+    // res.render("upload", {
+    //   users: users,
+    // });
+    res.send(users);
   });
 });
 
