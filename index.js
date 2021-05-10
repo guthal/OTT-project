@@ -40,7 +40,7 @@ const contentSchema = new Schema({
   description: { type: String, required: true },
   weeks: Number,
   type: { type: String, required: true },
-  genre: { type: String, required: true },
+  genre: { type: Array, required: true },
   tag: { type: String, required: true },
   thumbnail: String,
   start: Date,
@@ -80,7 +80,7 @@ const seriesSchema = new Schema({
   ratings: Number,
   contentLanguage: String,
   ageRestriction: String,
-  genres: String,
+  genres: Array,
   seasons: [
     {
       seasonID: String,
@@ -161,8 +161,6 @@ app.get("/contents", (_req, res) => {
         return res
           .status(404)
           .send({ code: 404, message: "Resource not found" });
-
-      //passing the whole data as response need to see if it's good practice
       const data = contents.map(val => {
         return {
           id: val.contentId,
