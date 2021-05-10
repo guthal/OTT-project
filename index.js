@@ -40,7 +40,7 @@ const contentSchema = new Schema({
   description: { type: String, required: true },
   weeks: Number,
   type: { type: String, required: true },
-  genre: { type: String, required: true },
+  genre: { type: Array, required: true },
   tag: { type: String, required: true },
   thumbnail: String,
   start: Date,
@@ -49,7 +49,7 @@ const contentSchema = new Schema({
     pic2030: { type: String, required: true },
     picsq: { type: String, required: true },
   },
-  seriesID: {
+  seriesId: {
     type: String,
     ref: "Series",
   },
@@ -60,15 +60,17 @@ const contentSchema = new Schema({
   isLandscape: Boolean,
   contentSeriesInfo: {
     seasonID: String,
-    seasonNo: String,
+    seasonNo: Number,
     episodeNo: Number,
+    prevEpisodeContentId: String,
+    nextEpisodeContentId: String,
   },
 });
 //make tag required later in production
 const Content = mongoose.model("Content", contentSchema);
 
 const seriesSchema = new Schema({
-  seriesID: String,
+  seriesId: String,
   seriesName: String,
   totalSeasons: Number,
   cast: [
@@ -80,7 +82,7 @@ const seriesSchema = new Schema({
   ratings: Number,
   contentLanguage: String,
   ageRestriction: String,
-  genres: String,
+  genres: Array,
   seasons: [
     {
       seasonID: String,
@@ -127,7 +129,7 @@ const Payment = mongoose.model("Payment", paymentSchema);
 
 // Get contents of a particular Series
 app.get("/contents/series/:seriesId", (req, res) => {
-  Content.find({ seriesID: req.params.seriesId })
+  Content.find({ seriesId: req.params.seriesId })
     .sort({ seasonNo: "asc", episodeNo: "asc" })
     .exec((err, seriesContents) => {
       if (err || !seriesContents)
@@ -166,8 +168,6 @@ app.get("/contents", (_req, res) => {
         return res
           .status(404)
           .send({ code: 404, message: "Resource not found" });
-
-      //passing the whole data as response need to see if it's good practice
       const data = contents.map((val) => {
         return {
           id: val.contentId,
@@ -178,7 +178,8 @@ app.get("/contents", (_req, res) => {
           genre: val.genre,
           tag: val.tag,
           thumbnail: val.thumbnail,
-          seriesID: val.seriesID,
+          seriesId: val.seriesId,
+          contentSeriesInfo: val.contentSeriesInfo,
         };
       });
       res.send(data);
@@ -204,8 +205,9 @@ app.get("/contents/:contentId", (req, res) => {
       ageRestriction,
       genres,
       cast,
-      isLandscape,
       tag,
+      seriesId,
+      contentSeriesInfo,
     } = content[0];
     res.send({
       id: contentId,
@@ -220,8 +222,9 @@ app.get("/contents/:contentId", (req, res) => {
       ageRestriction,
       genres,
       cast,
-      isLandscape,
       tag,
+      seriesId,
+      contentSeriesInfo,
     });
   });
 });
