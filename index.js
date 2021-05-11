@@ -352,9 +352,10 @@ app.get("/user-purchase/:userId", (req, res) => {
 app.get("/user-purchase/:userId/contents/:contentId", (req, res) => {
   getUserPurchase(req, res, req.params.contentId);
 });
-
+//utype 0-admin, 1-makers,2-audience
+//"/cretors" is an admin panel
 app.get("/creators", (req, res) => {
-  User.find({ utype: 1 }, (err, users) => {
+  User.find({ utype: 0 }, (err, users) => {
     if (err || !users)
       return res.status(400).send({ code: 400, message: "Resource not found" });
     return res.send(users);
