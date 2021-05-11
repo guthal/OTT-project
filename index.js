@@ -353,16 +353,15 @@ app.get("/user-purchase/:userId/contents/:contentId", (req, res) => {
   getUserPurchase(req, res, req.params.contentId);
 });
 
-app.get("/upload", (req, res) => {
-  User.find({}, function (err, users) {
-    res.render("upload", {
-      users: users,
-    });
+app.get("/creators", (req, res) => {
+  User.find({ utype: 1 }, (err, users) => {
+    if (err || !users)
+      return res.status(400).send({ code: 400, message: "Resource not found" });
+    return res.send(users);
   });
 });
 
 //weekly streams schema
-
 app.get("/upload/content/:userId", (req, res) => {
   User.findOne({ userId: req.params.userId }, function (err, content) {
     res.render("weekly", {
