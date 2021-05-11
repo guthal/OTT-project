@@ -60,6 +60,7 @@ const contentSchema = new Schema({
   isLandscape: Boolean,
   contentSeriesInfo: {
     seasonID: String,
+    seriesName: String,
     seasonNo: Number,
     episodeNo: Number,
     seriesName:String
@@ -82,16 +83,7 @@ const seriesSchema = new Schema({
   contentLanguage: String,
   ageRestriction: String,
   genres: Array,
-  seasons: [
-    {
-      seasonID: String,
-      thumbnail:String,
-      description:String,
-      seasonNo: Number,
-      type: String,
-      price: Number,
-    },
-  ],
+  seasons: Array,
 });
 
 const Series = mongoose.model("Series", seriesSchema);
@@ -134,6 +126,38 @@ app.get("/series", (_req, res) => {
       return res.status(404).send({ code: 404, message: "Resource not found" });
 
     return res.send(series);
+  });
+});
+
+app.get("/series/:seriesId/seasons", (req, res) => {
+  Series.find({ seriesId: req.params.seriesId }).exec((err, series) => {
+    if (err || !series[0])
+      return res.status(404).send({ code: 404, message: "Resource not found" });
+
+    const seriesName = series[0].seriesName;
+    const seriesId = series[0].seriesId;
+
+    return res.send({
+      seriesId,
+      seriesName,
+      seasons: series[0].seasons,
+    });
+  });
+});
+
+app.get("/series/seasons", (_req, res) => {
+  Series.find({}).exec((err, series) => {
+    if (err || !series[0])
+      return res.status(404).send({ code: 404, message: "Resource not found" });
+
+    const seriesName = series[0].seriesName;
+    const seriesId = series[0].seriesId;
+
+    return res.send({
+      seriesId,
+      seriesName,
+      seasons: series[0].seasons,
+    });
   });
 });
 
@@ -327,17 +351,17 @@ app.get("/user-purchase/:userId", (req, res) => {
 app.get("/user-purchase/:userId/contents/:contentId", (req, res) => {
   getUserPurchase(req, res, req.params.contentId);
 });
-
-app.get("/upload", (req, res) => {
-  User.find({}, function (err, users) {
-    res.render("upload", {
-      users: users,
-    });
+//utype 0-admin, 1-makers,2-audience
+//"/cretors" is an admin panel
+app.get("/creators", (req, res) => {
+  User.find({ utype: 0 }, (err, users) => {
+    if (err || !users)
+      return res.status(400).send({ code: 400, message: "Resource not found" });
+    return res.send(users);
   });
 });
 
 //weekly streams schema
-
 app.get("/upload/content/:userId", (req, res) => {
   User.findOne({ userId: req.params.userId }, function (err, content) {
     res.render("weekly", {
