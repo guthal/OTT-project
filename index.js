@@ -5,6 +5,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const session =require('express-session');
+const passport =require('passport');
+const passportLocalMongoose=require('passport-local-mongoose');
 const { v4, stringify } = require("uuid");
 const Schema = mongoose.Schema;
 const app = express();
@@ -13,10 +16,22 @@ const nodemailer = require("nodemailer");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
+
+app.use(session({
+  secret:process.env.SECRET,
+  resave:false,
+  saveUninitialized:false
+}))
+//initializing passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 mongoose.connect(
   `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`,
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
+
+mongoose.set("useCreateIndex",true);
 // mongodb://localhost:27017/contentUpload
 
 app.use(function (req, res, next) {
@@ -93,21 +108,29 @@ const Series = mongoose.model("Series", seriesSchema);
 const userSchema = new Schema({
   userId: String,
   email: { type: String, required: true, unique: true },
-  user: { type: String, required: true, unique: true },
-  address: { type: String, required: true },
+  password:String,
+  username: { type: String, required: true},
+  address:String,
   phone: { type: Number, unique: true },
   office: String,
   city: String,
-  state: { type: String, required: true },
-  zip: { type: Number, required: true },
-  date: { type: Date, required: false },
+  state:String,
+  zip: Number,
+  date: { type: Date, required: true },
   history: [{ type: String, ref: "Content" }],
   utype: { type: Number, required: true },
 });
 // const secret =process.env.SECRET;
 // userSchema.plugin(encrypt,{secret:secret});
 //schemas constructors
+
+userSchema.plugin(passportLocalMongoose);
+
 const User = mongoose.model("User", userSchema);
+
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 const paymentSchema = new Schema({
   payId: String,
@@ -204,29 +227,30 @@ app.get("/series/:seriesId/contents", (req, res) => {
 });
 
 app.get("/contents", (_req, res) => {
-  Content.find({})
-    .sort({ title: "asc" })
-    .exec((err, contents) => {
-      if (err || !contents)
-        return res
-          .status(404)
-          .send({ code: 404, message: "Resource not found" });
-      const data = contents.map((val) => {
-        return {
-          id: val.contentId,
-          title: val.title,
-          description: val.description,
-          type: val.type,
-          price: val.price,
-          genre: val.genre,
-          tag: val.tag,
-          thumbnail: val.thumbnail,
-          seriesId: val.seriesId,
-          contentSeriesInfo: val.contentSeriesInfo,
-        };
+    Content.find({})
+      .sort({ title: "asc" })
+      .exec((err, contents) => {
+        if (err || !contents)
+          return res
+            .status(404)
+            .send({ code: 404, message: "Resource not found" });
+        const data = contents.map((val) => {
+          return {
+            id: val.contentId,
+            title: val.title,
+            description: val.description,
+            type: val.type,
+            price: val.price,
+            genre: val.genre,
+            tag: val.tag,
+            thumbnail: val.thumbnail,
+            seriesId: val.seriesId,
+            contentSeriesInfo: val.contentSeriesInfo,
+          };
+        });
+        res.send(data);
       });
-      res.send(data);
-    });
+  
 });
 
 // render content description, title button w.r.t to the business logic
@@ -438,59 +462,35 @@ app.post("/fm/register", (req, res) => {
   });
 });
 
-app.get("/register", (req, res) => {
-  res.render("register");
-});
-
-app.post("/register", (req, res) => {
-  const audience = new Audience({
-    email: req.body.email,
-  });
-  audience.save((err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.redirect("/");
-    }
-  });
-});
 
 app.get("/login", (req, res) => {
   res.render("login");
 });
 
 app.post("/login", (req, res) => {
-  function generateOTP() {
-    // Declare a digits variable
-    // which stores all digits
-    var digits = "0123456789";
-    let OTP = "";
-    for (let i = 0; i < 5; i++) {
-      OTP += digits[Math.floor(Math.random() * 10)];
-    }
-    return OTP;
-  }
+  
+});
 
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASS,
-    },
-  });
-
-  var mailOptions = {
-    from: process.env.EMAIL,
-    to: "vg931697@gmail.com",
-    subject: "login OTP for AVscope",
-    text: "here is you OTP" + generateOTP(),
-  };
-
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
+app.post("/register",(req,res)=>{
+  User.register(
+      ({
+        userId:v4(),
+        email:req.body.email,
+        username:req.body.username,
+        phone:req.body.phone,
+        date:Date.now(),
+        utype:2
+      }),
+      req.body.password,
+      (err,user)=>{
+      if (err){
+        console.log("there is an error: ",err);
+        console.log(req.body.username);
+        return res.status(400).send({ code: 400, message: "Resource not found" });
+      }else{
+        passport.authenticate("local")(req,res,()=>{
+          res.redirect("/contents");
+        })
     }
   });
 });
