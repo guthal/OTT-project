@@ -227,6 +227,7 @@ app.get("/series/:seriesId/contents", (req, res) => {
 });
 
 app.get("/contents", (_req, res) => {
+  if(req.isAuthenticated()){
     Content.find({})
       .sort({ title: "asc" })
       .exec((err, contents) => {
@@ -250,6 +251,9 @@ app.get("/contents", (_req, res) => {
         });
         res.send(data);
       });
+  }else{
+    res.status(404).send({code:404,message:"user is not authenticated"});
+  }
   
 });
 
@@ -395,11 +399,15 @@ app.get("/upload/content/:userId", (req, res) => {
 });
 
 app.get("/profile/:userId", (req, res) => {
-  Content.find({ userId: req.params.userId }, (err, weeks) => {
-    res.render("fm-profile", {
-      weeks: weeks,
+  if(req.isAuthenticated()&& req.user.utype==1 && req.user.userId===req.params.userId){
+    Content.find({ userId: req.params.userId }, (err, weeks) => {
+      res.render("fm-profile", {
+        weeks: weeks,
+      });
     });
-  });
+  }else{
+    res.status(500).send({code:500,message:"User not authenticated"});
+  }
 });
 
 app.post("/upload/content/:userId", (req, res) => {
@@ -489,6 +497,7 @@ app.post("/register",(req,res)=>{
         return res.status(400).send({ code: 400, message: "Resource not found" });
       }else{
         passport.authenticate("local")(req,res,()=>{
+          console.log("UserId is: ",req.user.userId);
           res.redirect("/contents");
         })
     }
