@@ -227,7 +227,7 @@ app.get("/series/:seriesId/contents", (req, res) => {
 });
 
 app.get("/contents", (_req, res) => {
-  if(req.isAuthenticated()){
+  // if(req.isAuthenticated()){
     Content.find({})
       .sort({ title: "asc" })
       .exec((err, contents) => {
@@ -251,9 +251,9 @@ app.get("/contents", (_req, res) => {
         });
         res.send(data);
       });
-  }else{
-    res.status(404).send({code:404,message:"user is not authenticated"});
-  }
+  // }else{
+  //   res.status(404).send({code:404,message:"user is not authenticated"});
+  // }
   
 });
 
@@ -382,7 +382,7 @@ app.get("/user-purchase/:userId/contents/:contentId", (req, res) => {
 //utype 0-admin, 1-makers,2-audience
 //"/cretors" is an admin panel
 app.get("/creators", (req, res) => {
-  User.find({ utype: 0 }, (err, users) => {
+  User.find({ utype: 1 }, (err, users) => {
     if (err || !users)
       return res.status(400).send({ code: 400, message: "Resource not found" });
     return res.send(users);
@@ -497,7 +497,7 @@ app.post("/register",(req,res)=>{
         return res.status(400).send({ code: 400, message: "Resource not found" });
       }else{
         passport.authenticate("local")(req,res,()=>{
-          console.log("UserId is: ",req.user.userId);
+          console.log("UserId is: %s, user utype: %i",req.user.userId,req.user.utype);
           res.redirect("/contents");
         })
     }
