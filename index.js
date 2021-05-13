@@ -7,7 +7,7 @@ const ejs = require("ejs");
 const mongoose = require("mongoose");
 const session =require('express-session');
 const passport =require('passport');
-const passportLocalMongoose=require('passport-local-mongoose');
+// const passportLocalMongoose=require('passport-local-mongoose');
 const { v4, stringify } = require("uuid");
 const Schema = mongoose.Schema;
 const app = express();
@@ -16,6 +16,20 @@ const nodemailer = require("nodemailer");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
+
+//models import
+const User=require("./model/User");
+const Content=require("./model/Content");
+const Series=require("./model/Series");
+const Payment=require("./model/Payment");
+
+//import routes
+const authRoute=require('./routes/auth');
+const contentRoute=require('./routes/contents');
+const creatorRoute=require('./routes/creators');
+const seriesRoute=require('./routes/series');
+const loginRoute=require('./routes/login');
+const fmRegisterRoute=require('./routes/fm-register');
 
 app.use(session({
   secret:process.env.SECRET,
@@ -32,6 +46,7 @@ mongoose.connect(
 );
 
 mongoose.set("useCreateIndex",true);
+
 // mongodb://localhost:27017/contentUpload
 
 app.use(function (req, res, next) {
@@ -43,262 +58,24 @@ app.use(function (req, res, next) {
   next();
 });
 
-const contentSchema = new Schema({
-  contentId: { type: String, required: true, unique: true },
-  userId: { type: String, required: true },
-  price: {
-    b: Number,
-    r: Number,
-    w: Number,
-  },
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  weeks: Number,
-  type: { type: String, required: true },
-  genre: { type: Array, required: true },
-  tag: { type: String, required: true },
-  thumbnail: String,
-  start: Date,
-  end: String,
-  thumbnail: {
-    pic2030: { type: String, required: true },
-    picsq: { type: String, required: true },
-  },
-  seriesId: {
-    type: String,
-    ref: "Series",
-  },
-  duration: Number,
-  ratings: Number,
-  contentLanguage: String,
-  ageRestriction: String,
-  isLandscape: Boolean,
-  contentSeriesInfo: {
-    seasonID: String,
-    seriesName: String,
-    seasonNo: Number,
-    episodeNo: Number,
-    seriesName:String
-  },
-});
-//make tag required later in production
-const Content = mongoose.model("Content", contentSchema);
-
-const seriesSchema = new Schema({
-  seriesId: String,
-  seriesName: String,
-  totalSeasons: Number,
-  cast: [
-    {
-      role: String,
-      name: String,
-    },
-  ],
-  ratings: Number,
-  contentLanguage: String,
-  ageRestriction: String,
-  genres: Array,
-  seasons: Array,
-});
-
-const Series = mongoose.model("Series", seriesSchema);
-
-//user info
-
-const userSchema = new Schema({
-  userId: String,
-  email: { type: String, required: true, unique: true },
-  password:String,
-  username: { type: String, required: true},
-  address:String,
-  phone: { type: Number, unique: true },
-  office: String,
-  city: String,
-  state:String,
-  zip: Number,
-  date: { type: Date, required: true },
-  history: [{ type: String, ref: "Content" }],
-  utype: { type: Number, required: true },
-});
-// const secret =process.env.SECRET;
-// userSchema.plugin(encrypt,{secret:secret});
-//schemas constructors
-
-userSchema.plugin(passportLocalMongoose);
-
-const User = mongoose.model("User", userSchema);
-
 passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
-const paymentSchema = new Schema({
-  payId: String,
-  contentId: { type: String, ref: "Content" },
-  userId: { type: String, ref: "User" },
-  amount: { type: Number, ref: "Content" },
-  date: Date,
-  type: { type: String, ref: "Content" },
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
+
+passport.serializeUser(function(user, done) {
+  console.log("serialize code: ",user)
+  done(null, user.id);
 });
 
-const Payment = mongoose.model("Payment", paymentSchema);
-
-app.get("/series", (_req, res) => {
-  Series.find({}).exec((err, series) => {
-    if (err || !series)
-      return res.status(404).send({ code: 404, message: "Resource not found" });
-
-    return res.send(series);
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    console.log("Deserialize code: ",id)
+    done(err, user);
   });
 });
 
-app.get("/series/:seriesId/seasons", (req, res) => {
-  Series.find({ seriesId: req.params.seriesId }).exec((err, series) => {
-    if (err || !series[0])
-      return res.status(404).send({ code: 404, message: "Resource not found" });
 
-    const seriesName = series[0].seriesName;
-    const seriesId = series[0].seriesId;
-
-    return res.send({
-      seriesId,
-      seriesName,
-      seasons: series[0].seasons,
-    });
-  });
-});
-
-app.get("/series/seasons", (_req, res) => {
-  Series.find({}).exec((err, series) => {
-    if (err || !series[0])
-      return res.status(404).send({ code: 404, message: "Resource not found" });
-
-    const seriesName = series[0].seriesName;
-    const seriesId = series[0].seriesId;
-
-    return res.send({
-      seriesId,
-      seriesName,
-      seasons: series[0].seasons,
-    });
-  });
-});
-
-app.get("/series/:seriesId", (req, res) => {
-  Series.find({ seriesId: req.params.seriesId }).exec((err, series) => {
-    if (err || !series)
-      return res.status(404).send({ code: 404, message: "Resource not found" });
-
-    res.send(series);
-  });
-});
-
-// Get contents of a particular Series
-app.get("/series/:seriesId/contents", (req, res) => {
-  Content.find({ seriesId: req.params.seriesId })
-    .sort({ seasonNo: "asc", episodeNo: "asc" })
-    .exec((err, seriesContents) => {
-      if (err || !seriesContents)
-        return res
-          .status(404)
-          .send({ code: 404, message: "Resource not found" });
-
-      const data = seriesContents.map((val) => {
-        return {
-          id: val.contentId,
-          title: val.title,
-          description: val.description,
-          type: val.type,
-          price: val.price,
-          tag: val.tag,
-          thumbnail: val.thumbnail,
-          duration: val.duration,
-          rating: val.rating,
-          contentLanguage: val.contentLanguage,
-          ageRestriction: val.ageRestriction,
-          genres: val.genres,
-          cast: val.cast,
-          seriesId: val.seriesId,
-          contentSeriesInfo: val.contentSeriesInfo,
-        };
-      });
-      return res.send(data);
-    });
-});
-
-app.get("/contents", (_req, res) => {
-  // if(req.isAuthenticated()){
-    Content.find({})
-      .sort({ title: "asc" })
-      .exec((err, contents) => {
-        if (err || !contents)
-          return res
-            .status(404)
-            .send({ code: 404, message: "Resource not found" });
-        const data = contents.map((val) => {
-          return {
-            id: val.contentId,
-            title: val.title,
-            description: val.description,
-            type: val.type,
-            price: val.price,
-            genre: val.genre,
-            tag: val.tag,
-            thumbnail: val.thumbnail,
-            seriesId: val.seriesId,
-            contentSeriesInfo: val.contentSeriesInfo,
-          };
-        });
-        res.send(data);
-      });
-  // }else{
-  //   res.status(404).send({code:404,message:"user is not authenticated"});
-  // }
-  
-});
-
-// render content description, title button w.r.t to the business logic
-app.get("/contents/:contentId", (req, res) => {
-  Content.find({ contentId: req.params.contentId }, (err, content) => {
-    if (err || !(content && content[0]))
-      return res.status(404).send({ code: 404, message: "Resource not found" });
-
-    const {
-      contentId,
-      title,
-      description,
-      type,
-      price,
-      thumbnail,
-      duration,
-      rating,
-      contentLanguage,
-      ageRestriction,
-      genres,
-      cast,
-      tag,
-      seriesId,
-      contentSeriesInfo,
-    } = content[0];
-    res.send({
-      id: contentId,
-      title,
-      description,
-      type,
-      price,
-      thumbnail,
-      duration,
-      rating,
-      contentLanguage,
-      ageRestriction,
-      genres,
-      cast,
-      tag,
-      seriesId,
-      contentSeriesInfo,
-    });
-  });
-});
 
 // Util function
 const getUserPurchase = (req, res, contentId) => {
@@ -379,17 +156,7 @@ app.get("/user-purchase/:userId", (req, res) => {
 app.get("/user-purchase/:userId/contents/:contentId", (req, res) => {
   getUserPurchase(req, res, req.params.contentId);
 });
-//utype 0-admin, 1-makers,2-audience
-//"/cretors" is an admin panel
-app.get("/creators", (req, res) => {
-  User.find({ utype: 1 }, (err, users) => {
-    if (err || !users)
-      return res.status(400).send({ code: 400, message: "Resource not found" });
-    return res.send(users);
-  });
-});
 
-//weekly streams schema
 app.get("/upload/content/:userId", (req, res) => {
   User.findOne({ userId: req.params.userId }, function (err, content) {
     res.render("weekly", {
@@ -443,66 +210,13 @@ app.post("/upload/content/:userId", (req, res) => {
   });
 });
 
-app.get("/fm/register", function (req, res) {
-  res.render("fm-register");
-});
-
-app.post("/fm/register", (req, res) => {
-  const user = new user({
-    userId: v4(),
-    email: req.body.email,
-    user: req.body.user,
-    phone: req.body.phone,
-    address: req.body.address,
-    office: req.body.office || null,
-    city: req.body.city,
-    state: req.body.state,
-    zip: req.body.zip,
-    date: Date.now(),
-    utype: 1,
-  });
-  user.save(function (err) {
-    if (!err) {
-      res.redirect("/contents");
-    } else {
-      console.log(err);
-    }
-  });
-});
-
-
-app.get("/login", (req, res) => {
-  res.render("login");
-});
-
-app.post("/login", (req, res) => {
-  
-});
-
-app.post("/register",(req,res)=>{
-  User.register(
-      ({
-        userId:v4(),
-        email:req.body.email,
-        username:req.body.username,
-        phone:req.body.phone,
-        date:Date.now(),
-        utype:2
-      }),
-      req.body.password,
-      (err,user)=>{
-      if (err){
-        console.log("there is an error: ",err);
-        console.log(req.body.username);
-        return res.status(400).send({ code: 400, message: "Resource not found" });
-      }else{
-        passport.authenticate("local")(req,res,()=>{
-          console.log("UserId is: %s, user utype: %i",req.user.userId,req.user.utype);
-          res.redirect("/contents");
-        })
-    }
-  });
-});
+//Route middleware
+app.use('/contents',contentRoute);
+app.use('/register',authRoute);
+app.use("/creators",creatorRoute);
+app.use("/series",seriesRoute);
+app.use("/login",loginRoute);
+app.use("/fm/register",fmRegisterRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, function () {
