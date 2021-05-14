@@ -11,6 +11,8 @@ router.post("/",async (req,res)=>{
     await User.register(
         ({
           userId:v4(),
+          fname:req.body.fname,
+          lname:req.body.lname,
           username:req.body.username,
           date:Date.now(),
           utype:2
