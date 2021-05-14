@@ -4,6 +4,8 @@ const Schema = mongoose.Schema;
 //user info
 const userSchema = new Schema({
     userId: {type:String,required:true,unique:true},
+    fname:{type:String,required:true},
+    lname:{type:String,required:true},
     password:String,
     username: { type: String, required: true,unique:true},
     address:String,
