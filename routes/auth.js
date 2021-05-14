@@ -5,6 +5,9 @@ const passport =require('passport');
 
 router.post("/",async (req,res)=>{
 
+    const emailExist=await User.findOne({email:req.body.email});
+    if(emailExist) return res.status(400).send("email already exists");
+
     await User.register(
         ({
           userId:v4(),

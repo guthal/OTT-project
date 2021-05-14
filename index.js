@@ -2,13 +2,13 @@
 
 require("dotenv").config();
 const express = require("express");
-const bodyParser = require("body-parser");
-const ejs = require("ejs");
+// const bodyParser = require("body-parser");
+// const ejs = require("ejs");
 const mongoose = require("mongoose");
 const session =require('express-session');
 const passport =require('passport');
 // const passportLocalMongoose=require('passport-local-mongoose');
-const { v4, stringify } = require("uuid");
+// const { v4, stringify } = require("uuid");
 const Schema = mongoose.Schema;
 const app = express();
 const encrypt = require("mongoose-encryption");
@@ -29,6 +29,7 @@ const contentRoute=require('./routes/contents');
 const creatorRoute=require('./routes/creators');
 const seriesRoute=require('./routes/series');
 const loginRoute=require('./routes/login');
+const logoutRoute=require("./routes/logout");
 const fmRegisterRoute=require('./routes/fm-register');
 const uploadRoute=require('./routes/upload');
 const userPurchaseRoute=require('./routes/userPurchase');
@@ -88,6 +89,7 @@ app.use("/fm/register",fmRegisterRoute);
 app.use("/upload",uploadRoute);
 app.use("/user-purchase",userPurchaseRoute);
 app.use("/profile",profileRoute);
+app.use("/logout",logoutRoute);
 
 
 const PORT = process.env.PORT || 3000;
