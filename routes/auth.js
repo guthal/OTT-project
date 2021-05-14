@@ -5,13 +5,12 @@ const passport =require('passport');
 
 router.post("/",async (req,res)=>{
 
-    const emailExist=await User.findOne({email:req.body.email});
-    if(emailExist) return res.status(400).send("email already exists");
+    const userName=await User.findOne({username:req.body.username});
+    if(userName) return res.status(400).send("email already exists");
 
     await User.register(
         ({
           userId:v4(),
-          email:req.body.email,
           username:req.body.username,
           date:Date.now(),
           utype:2
@@ -20,13 +19,12 @@ router.post("/",async (req,res)=>{
         (err,user)=>{
         if (err){
           console.log("there is an error: ",err);
-          console.log(req.body.username);
           return res.status(400).send({ code: 400, message: "Resource not found" });
         }else{
           passport.authenticate("local")(req,res,()=>{
             console.log("UserId is: %s, user utype: %i",req.user.userId,req.user.utype);
-            res.redirect("/contents");
-          })
+            res.send("user registered");
+          });
       }
     });
   });

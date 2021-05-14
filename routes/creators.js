@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
         return res.send(users);
       });
     }else{
-      res.send("404 error page not found");
+      res.status(403).send();
     }
   }else{
     res.send("user not authenticated");
