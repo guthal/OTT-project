@@ -3,15 +3,20 @@ const Content=require("../model/Content");
 const Series=require("../model/Series");
 
 router.get("/", (_req, res) => {
+  if(req.isAuthenticated()){
     Series.find({}).exec((err, series) => {
       if (err || !series)
         return res.status(404).send({ code: 404, message: "Resource not found" });
   
       return res.send(series);
     });
-  });
+  }else{
+    res.send("user not authenticated");
+  }
+});
   
 router.get("/:seriesId/seasons", (req, res) => {
+  if(req.isAuthenticated()){
     Series.find({ seriesId: req.params.seriesId }).exec((err, series) => {
       if (err || !series[0])
         return res.status(404).send({ code: 404, message: "Resource not found" });
@@ -25,9 +30,13 @@ router.get("/:seriesId/seasons", (req, res) => {
         seasons: series[0].seasons,
       });
     });
-  });
+  }else{
+    res.send("user not authenticated");
+  }
+});
   
 router.get("/seasons", (_req, res) => {
+  if(req.isAuthenticated()){
     Series.find({}).exec((err, series) => {
       if (err || !series[0])
         return res.status(404).send({ code: 404, message: "Resource not found" });
@@ -41,19 +50,27 @@ router.get("/seasons", (_req, res) => {
         seasons: series[0].seasons,
       });
     });
-  });
+  }else{
+    res.send("user not authenticated")
+  }
+});
   
 router.get("/:seriesId", (req, res) => {
+  if (req.isAuthenticated()) {
     Series.find({ seriesId: req.params.seriesId }).exec((err, series) => {
       if (err || !series)
         return res.status(404).send({ code: 404, message: "Resource not found" });
   
       res.send(series);
-    });
-  });
+    });    
+  } else {
+      res.send("user not authenticated");   
+  }
+});
   
   // Get contents of a particular Series
 router.get("/:seriesId/contents", (req, res) => {
+  if (req.isAuthenticated()) {
     Content.find({ seriesId: req.params.seriesId })
       .sort({ seasonNo: "asc", episodeNo: "asc" })
       .exec((err, seriesContents) => {
@@ -82,7 +99,10 @@ router.get("/:seriesId/contents", (req, res) => {
           };
         });
         return res.send(data);
-      });
-  });
+      });    
+  } else {
+    res.send("user not authenticated");   
+  }
+});
   
 module.exports=router;

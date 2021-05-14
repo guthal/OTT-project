@@ -2,10 +2,19 @@ const router =require("express").Router();
 const User=require("../model/User");
 
 router.get("/", function (req, res) {
-    res.render("fm-register");
-  });
+  if(req.isAuthenticated()){
+    if(req.user.utype===0){
+      res.send("fm-register")
+    }else{
+      res.status(404).status("no page exists like that");
+    }
+  }else{
+    res.status(400).send("User not authenticated")
+  }
+});
   
 router.post("/", (req, res) => {
+  if(req.isAuthenticated() && req.user.utype===0){
     const user = new User({
       userId: v4(),
       email: req.body.email,
@@ -26,6 +35,7 @@ router.post("/", (req, res) => {
         console.log(err);
       }
     });
-  });
+   }
+});
   
 module.exports=router;

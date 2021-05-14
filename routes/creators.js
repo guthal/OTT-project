@@ -4,11 +4,19 @@ const router =require("express").Router();
 const User=require("../model/User");
 
 router.get("/", (req, res) => {
-    User.find({ utype: 1 }, (err, users) => {
-      if (err || !users)
-        return res.status(400).send({ code: 400, message: "Resource not found" });
-      return res.send(users);
-    });
-  });
+  if(req.isAuthenticated()){
+    if(req.user.utype==0){
+      User.find({ utype: 1 }, (err, users) => {
+        if (err || !users)
+          return res.status(400).send({ code: 400, message: "Resource not found" });
+        return res.send(users);
+      });
+    }else{
+      res.send("404 error page not found");
+    }
+  }else{
+    res.send("user not authenticated");
+  }
+});
   
 module.exports=router;

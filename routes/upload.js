@@ -5,22 +5,19 @@ const Content=require("../model/Content");
 router
 .route("/content/:userId")
 .get((req, res) => {
+  if(req.isAuthenticated() && req.user.utype==0){
     User.findOne({ userId: req.params.userId }, function (err, content) {
       res.render("weekly", {
         content: content.userId,
       });
     });
+  }else{
+    res.status(404).send("404 error page not found");
+  }
 })
 .post((req, res) => {
     // console.log(req.path+" this is the user Id");
-  
-    const d = new Date();
-    d.setDate(d.getDate() + req.body.hours * 7);
-    const endDate = d.toString;
-    // console.log(d+" value of d");
-    // console.log(Date(endDate.toString())+" value of end date");
-    // console.log(Date.now()+" Time of today");
-  
+  if(req.isAuthenticated() && req.user.utype==0){
     const content = new Content({
       contentId: v4(),
       userId: req.body.userId,
@@ -42,6 +39,7 @@ router
         res.redirect("/");
       }
     });
-  });
-  
-  module.exports=router;
+  }
+});
+
+module.exports=router;
