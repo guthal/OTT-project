@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const Payment = require("../model/Payment");
 const router = express.Router();
 
-const Payment = mongoose.model('Payment', PaymentDetailsSchema);
+// const Payment = mongoose.model('Payment', PaymentDetailsSchema);
 
 router.post("/create", async (req, res) => {
   try {
@@ -38,6 +38,11 @@ router.post("/success", async (req, res) => {
       razorpayPaymentId,
       razorpayOrderId,
       razorpaySignature,
+      userId,  //following data should be sent from backend
+      contentId,
+      amount,
+      date,
+      type
     } = req.body;
 
     const shasum = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
