@@ -25,7 +25,7 @@ router.post("/",async (req,res)=>{
         }else{
           passport.authenticate("local")(req,res,()=>{
             console.log("UserId is: %s, user utype: %i",req.user.userId,req.user.utype);
-            res.send("user registered");
+            res.redirect("/login");
           });
       }
     });

@@ -17,7 +17,9 @@ router.post("/", (req, res) => {
       }else{
         passport.authenticate("local")(req,res,()=>{
           console.log("user who logged in :",user);
-          res.send("success: ");
+          //should map the response 
+          //but will do it after the proper user is registered  
+          res.send(user);
         });
       }
     })

@@ -31,6 +31,7 @@ const contentSchema = new Schema({
     contentLanguage: String,
     ageRestriction: String,
     isLandscape: Boolean,
+    commission:{type:Number,required:true},
     contentSeriesInfo: {
       seasonID: String,
       seriesName: String,
