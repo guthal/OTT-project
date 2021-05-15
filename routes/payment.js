@@ -3,19 +3,10 @@ const express = require('express');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
-
+const Payment = require("../model/Payment");
 const router = express.Router();
 
-const PaymentDetailsSchema = mongoose.Schema({
-  razorpayDetails: {
-    orderId: String,
-    paymentId: String,
-    signature: String,
-  },
-  success: Boolean,
-});
-
-const PaymentDetails = mongoose.model('PatmentDetail', PaymentDetailsSchema);
+const Payment = mongoose.model('Payment', PaymentDetailsSchema);
 
 router.post('/orders', async (req, res) => {
   try {
