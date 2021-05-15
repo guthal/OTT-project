@@ -2,6 +2,7 @@
 
 require("dotenv").config();
 const express = require("express");
+
 // const bodyParser = require("body-parser");
 // const ejs = require("ejs");
 const mongoose = require("mongoose");
@@ -11,7 +12,7 @@ const cors = require("cors");
 // const passportLocalMongoose=require('passport-local-mongoose');
 // const { v4, stringify } = require("uuid");
 const Schema = mongoose.Schema;
-const app = express();
+const app= express();
 const encrypt = require("mongoose-encryption");
 const nodemailer = require("nodemailer");
 app.set("view engine", "ejs");
@@ -31,24 +32,31 @@ const Series = require("./model/Series");
 const Payment = require("./model/Payment");
 
 //import routes
-const authRoute = require("./routes/auth");
-const contentRoute = require("./routes/contents");
-const creatorRoute = require("./routes/creators");
-const seriesRoute = require("./routes/series");
-const loginRoute = require("./routes/login");
-const logoutRoute = require("./routes/logout");
-const fmRegisterRoute = require("./routes/fm-register");
-const uploadRoute = require("./routes/upload");
-const userPurchaseRoute = require("./routes/userPurchase");
-const profileRoute = require("./routes/profile");
+const authRoute=require('./routes/auth');
+const contentRoute=require('./routes/contents');
+const creatorRoute=require('./routes/creators');
+const seriesRoute=require('./routes/series');
+const loginRoute=require('./routes/login');
+const logoutRoute=require("./routes/logout");
+const fmRegisterRoute=require('./routes/fm-register');
+const uploadRoute=require('./routes/upload');
+const userPurchaseRoute=require('./routes/userPurchase');
+const profileRoute=require('./routes/profile');
+const orderRoute=require('./routes/payment');
 
-app.use(
-  session({
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+app.use(session({
+  secret:process.env.SECRET,
+  name: 'sid',
+  resave:false,
+  saveUninitialized:false,
+  authenticated:false,
+  rolling:false,
+  cookie:{
+    maxAge:(1000*60*30),
+    sameSite:true,
+    secure:true
+  }
+}))
 
 //initializing passport
 app.use(passport.initialize());
@@ -91,18 +99,21 @@ passport.deserializeUser(function (id, done) {
 });
 
 //Route middleware
-app.use("/contents", contentRoute);
-app.use("/register", authRoute);
-app.use("/creators", creatorRoute);
-app.use("/series", seriesRoute);
-app.use("/login", loginRoute);
-app.use("/fm/register", fmRegisterRoute);
-app.use("/upload", uploadRoute);
-app.use("/user-purchase", userPurchaseRoute);
-app.use("/profile", profileRoute);
-app.use("/logout", logoutRoute);
+app.use('/contents',contentRoute);
+app.use('/register',authRoute);
+app.use("/creators",creatorRoute);
+app.use("/series",seriesRoute);
+app.use("/login",loginRoute);
+app.use("/fm/register",fmRegisterRoute);
+app.use("/upload",uploadRoute);
+app.use("/user-purchase",userPurchaseRoute);
+app.use("/profile",profileRoute);
+app.use("/logout",logoutRoute);
+app.use("/payment",orderRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, function () {
   console.log(`Server started on port ${PORT}.. `);
 });
+
+

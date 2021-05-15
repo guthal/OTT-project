@@ -18,6 +18,12 @@ const contentSchema = new Schema({
     thumbnail: String,
     start: Date,
     end: String,
+    cast:[
+      {
+        role:String,
+        name:String
+      }
+    ],
     thumbnail: {
       pic2030: { type: String, required: true },
       picsq: { type: String, required: true },
