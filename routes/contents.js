@@ -79,7 +79,6 @@ router.get("/:contentId", (req, res) => {
       });
     });
   } else {
-    console.log(req.isAuthenticated()); //false
     res.status(404).send({ code: 404, message: "user is not authenticated" });
   }
 });
