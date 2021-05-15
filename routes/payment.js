@@ -1,8 +1,8 @@
-require('dotenv').config();
-const express = require('express');
-const Razorpay = require('razorpay');
-const crypto = require('crypto');
-const mongoose = require('mongoose');
+require("dotenv").config();
+const express = require("express");
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+const mongoose = require("mongoose");
 
 const router = express.Router();
 
@@ -15,9 +15,9 @@ const PaymentDetailsSchema = mongoose.Schema({
   success: Boolean,
 });
 
-const PaymentDetails = mongoose.model('PatmentDetail', PaymentDetailsSchema);
+const PaymentDetails = mongoose.model("PaymentDetail", PaymentDetailsSchema);
 
-router.post('/orders', async (req, res) => {
+router.post("/orders", async (req, res) => {
   try {
     const instance = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID, // YOUR RAZORPAY KEY
@@ -26,13 +26,13 @@ router.post('/orders', async (req, res) => {
 
     const options = {
       amount: 50000,
-      currency: 'INR',
-      receipt: 'receipt_order_74394',
+      currency: "INR",
+      receipt: "receipt_order_74394",
     };
 
     const order = await instance.orders.create(options);
 
-    if (!order) return res.status(500).send('Some error occured');
+    if (!order) return res.status(500).send("Some error occured");
 
     res.json(order);
   } catch (error) {
@@ -40,7 +40,7 @@ router.post('/orders', async (req, res) => {
   }
 });
 
-router.post('/success', async (req, res) => {
+router.post("/success", async (req, res) => {
   try {
     const {
       orderCreationId,
@@ -49,12 +49,12 @@ router.post('/success', async (req, res) => {
       razorpaySignature,
     } = req.body;
 
-    const shasum = crypto.createHmac('sha256', process.env.RAZORPAY_SECRET);
+    const shasum = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET);
     shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
-    const digest = shasum.digest('hex');
+    const digest = shasum.digest("hex");
 
     if (digest !== razorpaySignature)
-      return res.status(400).json({ msg: 'Transaction not legit!' });
+      return res.status(400).json({ msg: "Transaction not legit!" });
 
     const newPayment = PaymentDetails({
       razorpayDetails: {
@@ -68,7 +68,7 @@ router.post('/success', async (req, res) => {
     await newPayment.save();
 
     res.json({
-      msg: 'success',
+      msg: "success",
       orderId: razorpayOrderId,
       paymentId: razorpayPaymentId,
     });
