@@ -1,28 +1,39 @@
-const router =require("express").Router();
-const User=require("../model/User");
-const passport =require('passport');
+const router = require("express").Router();
+const User = require("../model/User");
+const passport = require("passport");
 
-router.get("/", (req, res) => {
-    res.render("login");
-  });
-  
-router.post("/", (req, res) => {
-    const user=new User({
-      username:req.body.username,
-      password:req.body.password
+// router.get("/", (req, res) => {
+//   res.render("login");
+// });
+
+const login = async (req, res) => {
+  const userName = await User.findOne({ username: req.body.username });
+  if (!userName) {
+    return res.status(401).send("Email does not Exist");
+  } else {
+    const user = new User({
+      username: req.body.username,
+      password: req.body.password,
     });
-    req.login(user,(err)=>{
-      if(err){
-        console.log("%s user has error %s ",user,err);
-      }else{
-        passport.authenticate("local")(req,res,()=>{
-          console.log("user who logged in :",user);
-          //should map the response 
-          //but will do it after the proper user is registered  
-          res.send(user);
+    req.login(user, err => {
+      if (err) {
+        console.log("%s user has error %s ", user, err);
+        res.status(401).send("Unauthorised");
+      } else {
+        passport.authenticate("local")(req, res, () => {
+          console.log("user who logged in :", user);
+          //should map the response
+          //but will do it after the proper user is registered
+          res.send(req.user);
         });
       }
-    })
-  });
-  
-module.exports=router;
+    });
+  }
+};
+
+router.post("/", (req, res) => {
+  login(req, res);
+});
+
+module.exports = router;
+module.exports = login;
