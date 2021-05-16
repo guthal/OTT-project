@@ -88,13 +88,11 @@ passport.use(User.createStrategy());
 // passport.deserializeUser(User.deserializeUser());
 
 passport.serializeUser(function (user, done) {
-  console.log("serialize code: ", user);
   done(null, user.id);
 });
 
 passport.deserializeUser(function (id, done) {
   User.findById(id, function (err, user) {
-    console.log("Deserialize code: ", id);
     done(err, user);
   });
 });

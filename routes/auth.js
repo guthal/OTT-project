@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
       fname: req.body.fname,
       lname: req.body.lname,
       username: req.body.username,
-      date: Date.now(),
+      date: Date(Date.now()),
       utype: 2,
     },
     req.body.password,
