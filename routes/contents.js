@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
           return res
             .status(404)
             .send({ code: 404, message: "Resource not found" });
-        const data = contents.map((val) => {
+        const data = contents.map(val => {
           return {
             id: val.contentId,
             title: val.title,
@@ -79,7 +79,6 @@ router.get("/:contentId", (req, res) => {
       });
     });
   } else {
-    console.log(req.isAuthenticated()); //false
     res.status(404).send({ code: 404, message: "user is not authenticated" });
   }
 });

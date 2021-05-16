@@ -12,29 +12,23 @@ router.get("/", function (req, res) {
     res.status(400).send("User not authenticated")
   }
 });
-  
-router.post("/", (req, res) => {
+  //need to access the user and patch some information
+  //need to test it 
+router.patch("/:userId", (req, res) => {
   if(req.isAuthenticated() && req.user.utype===0){
-    const user = new User({
-      userId: v4(),
-      email: req.body.email,
-      user: req.body.user,
-      phone: req.body.phone,
-      address: req.body.address,
-      office: req.body.office || null,
-      city: req.body.city,
-      state: req.body.state,
-      zip: req.body.zip,
-      date: Date.now(),
-      utype: 1,
-    });
-    user.save(function (err) {
-      if (!err) {
-        res.redirect("/contents");
-      } else {
-        console.log(err);
+    User.updateOne(
+      {userId:req.params.userId},
+      {$set:req.body},
+      (err)=>{
+        if (!err) {
+          res.send("Succesfully updated");
+        } else {
+          res.send(err);
+        }
       }
-    });
+      );
+   }else{
+     res.status(403).send("forbidden");
    }
 });
   

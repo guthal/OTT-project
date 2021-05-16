@@ -2,11 +2,13 @@
 
 require("dotenv").config();
 const express = require("express");
+
 // const bodyParser = require("body-parser");
 // const ejs = require("ejs");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
+const cors = require("cors");
 // const passportLocalMongoose=require('passport-local-mongoose');
 // const { v4, stringify } = require("uuid");
 const Schema = mongoose.Schema;
@@ -16,6 +18,12 @@ const nodemailer = require("nodemailer");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:3000",
+  })
+);
 
 //models import
 const User = require("./model/User");
@@ -34,14 +42,23 @@ const fmRegisterRoute = require("./routes/fm-register");
 const contentUploadRoute = require("./routes/content-upload");
 const userPurchaseRoute = require("./routes/userPurchase");
 const profileRoute = require("./routes/profile");
+const orderRoute = require("./routes/orders");
 
 app.use(
   session({
     secret: process.env.SECRET,
+    name: "sid",
     resave: false,
     saveUninitialized: false,
+    // rolling: false,
+    cookie: {
+      maxAge: 1000 * 60 * 30,
+      sameSite: true,
+      // secure: true,
+    },
   })
 );
+
 //initializing passport
 app.use(passport.initialize());
 app.use(passport.session());
@@ -55,14 +72,15 @@ mongoose.set("useCreateIndex", true);
 
 // mongodb://localhost:27017/contentUpload
 
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "http://localhost:3000*");
+//   res.header("Access-Control-Allow-Credentials", true);
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next();
+// });
 
 passport.use(User.createStrategy());
 
@@ -92,6 +110,7 @@ app.use("/content-upload", contentUploadRoute);
 app.use("/user-purchase", userPurchaseRoute);
 app.use("/profile", profileRoute);
 app.use("/logout", logoutRoute);
+app.use("/orders", orderRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, function () {

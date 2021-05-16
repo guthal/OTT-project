@@ -5,7 +5,7 @@ const Series = require("../model/Series");
 router.get("/", (req, res) => {
   if (req.isAuthenticated()) {
     Series.find({}).exec((err, series) => {
-      if (err || !series[0])
+      if (err || !series)
         return res
           .status(404)
           .send({ code: 404, message: "Resource not found" });
