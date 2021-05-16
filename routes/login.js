@@ -1,39 +1,46 @@
 const router = require("express").Router();
 const User = require("../model/User");
 const passport = require("passport");
-
+const login= require("./login-util")
 // router.get("/", (req, res) => {
 //   res.render("login");
 // });
 
-const login = async (req, res) => {
-  const userName = await User.findOne({ username: req.body.username });
-  if (!userName) {
-    return res.status(401).send("Email does not Exist");
-  } else {
-    const user = new User({
-      username: req.body.username,
-      password: req.body.password,
-    });
-    req.login(user, err => {
-      if (err) {
-        console.log("%s user has error %s ", user, err);
-        res.status(401).send("Unauthorised");
-      } else {
-        passport.authenticate("local")(req, res, () => {
-          console.log("user who logged in :", user);
-          //should map the response
-          //but will do it after the proper user is registered
-          res.send(req.user);
-        });
-      }
-    });
+
+
+
+router.get("/verify",(req,res)=>{
+  // try {
+  //   console.log("verify endpoint: ");
+  //   res.send("hey");
+    
+  // } catch (error) {
+  //   console.log(error);
+  // }
+  console.log("hey")
+  console.log(req.isAuthenticated());
+  if(req.isAuthenticated()){
+      User.findById({userId:req.user.userId},(err,user)=>{
+        if (err || !(user))
+        return res
+          .status(401)
+          .send({ code: 401, message: "User Unauthorized" });
+      })
+      return res.send({...req.user,
+        fname: user.fname,
+        lname: user.lname
+      })
+  }else{
+    res.status(401).send();
   }
-};
+});
 
 router.post("/", (req, res) => {
+  // return res.send("login bypassed");
   login(req, res);
 });
 
+
+
 module.exports = router;
-module.exports = login;
+// module.exports = login;

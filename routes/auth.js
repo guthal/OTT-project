@@ -2,7 +2,7 @@ const router = require("express").Router();
 const User = require("../model/User");
 const { v4, stringify } = require("uuid");
 const passport = require("passport");
-const login = require("./login");
+const login = require("./login-util");
 
 router.post("/", async (req, res) => {
   const userName = await User.findOne({ username: req.body.username });
