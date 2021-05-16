@@ -1,8 +1,8 @@
-require('dotenv').config();
-const express = require('express');
-const Razorpay = require('razorpay');
-const crypto = require('crypto');
-const mongoose = require('mongoose');
+require("dotenv").config();
+const express = require("express");
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+const mongoose = require("mongoose");
 const Payment = require("../model/Payment");
 const router = express.Router();
 
@@ -38,11 +38,10 @@ router.post("/success", async (req, res) => {
       razorpayPaymentId,
       razorpayOrderId,
       razorpaySignature,
-      userId,  //following data should be sent from backend
+      userId,
       contentId,
       amount,
-      date,
-      type
+      type,
     } = req.body;
 
     const shasum = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
@@ -52,12 +51,15 @@ router.post("/success", async (req, res) => {
     if (digest !== razorpaySignature)
       return res.status(400).json({ msg: "Transaction not legit!" });
 
-    const newPayment = Payment({
-      razorpayDetails: {
-        orderId: razorpayOrderId,
-        paymentId: razorpayPaymentId,
-        signature: razorpaySignature,
-      },
+    const newPayment = new Payment({
+      payId: razorpayPaymentId,
+      contentId: contentId,
+      userId: userId,
+      amount: amount / 100,
+      date: Date(Date.now()),
+      orderId: razorpayOrderId,
+      signature: razorpaySignature,
+      type: type,
       success: true,
     });
 

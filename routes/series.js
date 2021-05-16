@@ -10,7 +10,12 @@ router.get("/", (req, res) => {
           .status(404)
           .send({ code: 404, message: "Resource not found" });
 
-      return res.send(series);
+      const seriesData = series.map((eachSeries) => ({
+        seriesName: eachSeries.seriesName,
+        seriesId: eachSeries.seriesId,
+        seasons: eachSeries.seasons,
+      }));
+      return res.send(seriesData);
     });
   } else {
     res.send("user not authenticated");
@@ -20,28 +25,6 @@ router.get("/", (req, res) => {
 router.get("/:seriesId/seasons", (req, res) => {
   if (req.isAuthenticated()) {
     Series.find({ seriesId: req.params.seriesId }).exec((err, series) => {
-      if (err || !series[0])
-        return res
-          .status(404)
-          .send({ code: 404, message: "Resource not found" });
-
-      const seriesName = series[0].seriesName;
-      const seriesId = series[0].seriesId;
-
-      return res.send({
-        seriesId,
-        seriesName,
-        seasons: series[0].seasons,
-      });
-    });
-  } else {
-    res.send("user not authenticated");
-  }
-});
-
-router.get("/seasons", (_req, res) => {
-  if (req.isAuthenticated()) {
-    Series.find({}).exec((err, series) => {
       if (err || !series[0])
         return res
           .status(404)
@@ -87,7 +70,7 @@ router.get("/:seriesId/contents", (req, res) => {
             .status(404)
             .send({ code: 404, message: "Resource not found" });
 
-        const data = seriesContents.map(val => {
+        const data = seriesContents.map((val) => {
           return {
             id: val.contentId,
             title: val.title,
