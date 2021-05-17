@@ -40,7 +40,7 @@ const loginRoute = require("./routes/login");
 const logoutRoute = require("./routes/logout");
 const fmRegisterRoute = require("./routes/fm-register");
 const contentUploadRoute = require("./routes/content-upload");
-const userPurchaseRoute = require("./routes/userPurchase");
+const userPurchaseRoute = require("./routes/user-purchase");
 const profileRoute = require("./routes/profile");
 const orderRoute = require("./routes/orders");
 

@@ -4,6 +4,8 @@ const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 const Payment = require("../model/Payment");
+const User = require("../model/User");
+
 const router = express.Router();
 
 // const Payment = mongoose.model('Payment', PaymentDetailsSchema);
@@ -65,10 +67,23 @@ router.post("/success", async (req, res) => {
 
     await newPayment.save();
 
-    res.json({
-      msg: "success",
-      orderId: razorpayOrderId,
-      paymentId: razorpayPaymentId,
+    User.updateOne(
+      { userId: userId },
+      {
+        $push: {
+          history: contentId,
+        },
+      }
+    ).exec((err, series) => {
+      if (err || !series) {
+        console.log(err);
+        return res.status(400).send({ message: "Failed to create season" });
+      }
+      res.send({
+        msg: "success",
+        orderId: razorpayOrderId,
+        paymentId: razorpayPaymentId,
+      });
     });
   } catch (error) {
     res.status(500).send(error);
