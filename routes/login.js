@@ -1,19 +1,8 @@
 const router = require("express").Router();
 const User = require("../model/User");
-const passport = require("passport");
 const login = require("./login-util");
-// router.get("/", (req, res) => {
-//   res.render("login");
-// });
 
 router.get("/verify", (req, res) => {
-  // try {
-  //   console.log("verify endpoint: ");
-  //   res.send("hey");
-
-  // } catch (error) {
-  //   console.log(error);
-  // }
   if (req.isAuthenticated()) {
     User.find({ userId: req.user.userId }, (err, user) => {
       if (err || !user)
@@ -36,9 +25,7 @@ router.get("/verify", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  // return res.send("login bypassed");
   login(req, res);
 });
 
 module.exports = router;
-// module.exports = login;
