@@ -69,7 +69,7 @@ router.post("/", (req, res) => {
         $push: {
           seasons: {
             seasonId: v4(),
-            seasonNo: 1,
+            seasonNo: req.body[0].seasonNo,
             title: req.body[0].title,
             description: req.body[0].description,
             thumbnail: req.body[0].thumbnailUrl,
@@ -92,88 +92,63 @@ router.post("/", (req, res) => {
     });
   } else if (action === "create_episode") {
     let currentEpisodeNo;
-    let newContent;
-    Content.find({ seriesId: req.body[0].seriesId }, (err, contents) => {
-      if (err || !contents)
-        return res.status(400).send({ message: "Failed to fetch content" });
-      console.log("Content Found");
-      return contents;
-    })
+    Content.find({ seriesId: req.body[0].seriesId })
       .then((contents) => {
-        const episodeList = contents.map(
-          (content) => content.contentSeriesInfo.episodeNo
-        );
-        currentEpisodeNo = Math.max(...episodeList, 1);
+        const episodeList = contents
+          .filter(
+            (content) =>
+              content.contentSeriesInfo.seasonNo === req.body[0].seasonNo
+          )
+          .map((content) => content.contentSeriesInfo.episodeNo);
+        currentEpisodeNo = Math.max(...episodeList, 0);
       })
       .then(() => {
-        return Series.findOne(
-          { seriesId: req.body[0].seriesId },
-          (err, series) => {
-            if (err || !series)
-              return res
-                .status(400)
-                .send({ message: "Failed to fetch series" });
-            console.log("Series Found");
-            return series;
-          }
-        );
+        return Series.findOne({ seriesId: req.body[0].seriesId });
       })
       .then((series) => {
         const seasons = series.seasons;
         const season = seasons.find(
           (season) => season.seasonNo === req.body[0].seasonNo
         );
-        console.log("Season found");
         return season;
       })
       .then((season) => {
-        const content = Content.create(
-          {
-            contentId: v4(),
-            cast: req.body[0].cast,
-            genre: req.body[0].genres,
-            contentUrl: req.body[0].contentUrl,
-            userId: req.body[0].creatorId,
-            description: req.body[0].description,
-            title: req.body[0].title,
-            thumbnail: req.body[0].thumbnailUrl,
-            type: season.type,
-            price: season.price,
-            seriesId: req.body[0].seriesId,
-            contentSeriesInfo: {
-              seasonNo: req.body[0].seasonNo,
-              episodeNo: currentEpisodeNo,
-            },
+        return Content.create({
+          contentId: v4(),
+          cast: req.body[0].cast,
+          genre: req.body[0].genres,
+          contentUrl: req.body[0].contentUrl,
+          userId: req.body[0].creatorId,
+          description: req.body[0].description,
+          title: req.body[0].title,
+          thumbnail: req.body[0].thumbnailUrl,
+          type: season.type,
+          price: season.price,
+          seriesId: req.body[0].seriesId,
+          contentSeriesInfo: {
+            seasonNo: req.body[0].seasonNo,
+            episodeNo: currentEpisodeNo + 1,
           },
-          (err, content) => {
-            if (err || !content)
-              return res
-                .status(400)
-                .send({ message: "Failed to create Content" });
-
-            console.log("Content Created");
-            newContent = Object.assign(content);
-            return content;
-          }
-        );
-
-        return content;
+        });
       })
-      .then(() => {
-        if (newContent && newContent.contentSeriesInfo.episodeNo === 1) {
-          Series.updateOne(
+      .then((content) => {
+        if (content.contentSeriesInfo.episodeNo === 1) {
+          return Series.findOneAndUpdate(
             {
               seriesId: req.body[0].seriesId,
               "seasons.seasonNo": req.body[0].seasonNo,
             },
             {
-              $set: { "seasons.$.startContentId": newContent.contentId },
+              $set: { "seasons.$.startContentId": content.contentId },
             }
           );
-        }
+        } else return Promise.resolve();
       })
-      .then(() => {
-        return res.send(newContent);
+      .then((content) => {
+        res.send(content);
+      })
+      .catch((err) => {
+        res.status(400).send(err.message);
       });
   }
 });
