@@ -18,6 +18,7 @@ const contentSchema = new Schema({
   thumbnail: String,
   start: Date,
   end: String,
+  isAvailable:Boolean,
   seriesId: {
     type: String,
     ref: "Series",
