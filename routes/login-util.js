@@ -31,9 +31,6 @@ const login = async (req, res) => {
               lname: userData[0].lname,
             });
           });
-          //should map the response
-          //but will do it after the proper user is registered
-          // res.send({ utype: req.user.utype });
         });
       }
     });

@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const User = require("../model/User");
-const { v4, stringify } = require("uuid");
-const passport = require("passport");
+const { v4 } = require("uuid");
 const login = require("./login-util");
 
 router.post("/", async (req, res) => {
