@@ -36,7 +36,7 @@ router.get("/", (req, res) => {
 
 // render content description, title button w.r.t to the business logic
 router.get("/:contentId", (req, res) => {
-  if (true || req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
     Content.find({ contentId: req.params.contentId }, (err, content) => {
       if (err || !(content && content[0]))
         return res
