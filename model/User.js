@@ -14,6 +14,8 @@ const userSchema = new Schema({
     city: String,
     state:String,
     zip: Number,
+    pan:Number,
+    bank:Number,
     date: { type: Date, required: true },
     history: [{ type: String, ref: "Content" }],
     utype: { type: Number, required: true },

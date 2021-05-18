@@ -16,13 +16,21 @@ router.get("/", function (req, res) {
 //need to test it
 router.post("/", (req, res) => {
   if (req.isAuthenticated() && req.user.utype === 0) {
-    User.updateOne({ username: req.body.username }, { $set: req.body }, err => {
-      if (!err) {
-        res.send("Succesfully updated");
-      } else {
-        res.send(err);
+    User.updateOne(
+      { username: req.body.username },
+      {
+        $set: {
+          username: req.body.username,
+        },
+      },
+      (err) => {
+        if (!err) {
+          res.send("Succesfully updated");
+        } else {
+          res.send(err);
+        }
       }
-    });
+    );
   } else {
     res.status(403).send("forbidden");
   }
