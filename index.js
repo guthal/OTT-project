@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const cors = require("cors");
-const MongoStore = require("connect-mongo")(session);
+// const MongoStore = require("connect-mongo")(session);
 // const passportLocalMongoose=require('passport-local-mongoose');
 // const { v4, stringify } = require("uuid");
 const Schema = mongoose.Schema;
@@ -51,7 +51,7 @@ app.use(
     name: "sid",
     resave: false,
     saveUninitialized: false,
-    store: MongoStore(options),
+    // store: MongoStore(options),
     // rolling: false,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 5,
