@@ -59,7 +59,7 @@ router.post("/success", async (req, res) => {
       userId: userId,
       amount: amount / 100,
       date: Date(Date.now()),
-      contentType:, // need to work on this 
+      contentType: "test", // need to work on this
       orderId: razorpayOrderId,
       signature: razorpaySignature,
       type: type,
