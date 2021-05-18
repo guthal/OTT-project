@@ -110,7 +110,16 @@ app.use("/profile", profileRoute);
 app.use("/logout", logoutRoute);
 app.use("/orders", orderRoute);
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, function () {
-  console.log(`Server started on port ${PORT}.. `);
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 8000;
+}
+app.listen(port,()=>{
+  console.log("server running at port: ",port)
 });
+
+
+// const PORT = process.env.PORT || 3001;
+// app.listen(PORT, function () {
+//   console.log(`Server started on port ${PORT}.. `);
+// });

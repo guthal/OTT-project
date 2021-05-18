@@ -1,6 +1,6 @@
 .env
-<<<<<<< HEAD
 node_modules
-=======
-node_modules
->>>>>>> origin/main
+/node_modules
+npm-debug.log
+.DS_Store
+/*.env
