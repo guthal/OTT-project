@@ -17,7 +17,7 @@ const seriesSchema = new Schema({
     r: Number,
     w: Number,
   },
-  seasons: Array,
+  seasons: Array,//need to add isAvailable flag into season array
   thumbnail: String,
 });
 

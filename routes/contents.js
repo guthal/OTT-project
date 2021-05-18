@@ -24,6 +24,7 @@ router.get("/", (req, res) => {
             thumbnail: val.thumbnail,
             seriesId: val.seriesId,
             contentSeriesInfo: val.contentSeriesInfo,
+            isAvailable:val.isAvailable
           };
         });
         res.send(data);
