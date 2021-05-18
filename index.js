@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const cors = require("cors");
-// const MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo");
 // const passportLocalMongoose=require('passport-local-mongoose');
 // const { v4, stringify } = require("uuid");
 const Schema = mongoose.Schema;
@@ -45,13 +45,15 @@ const userPurchaseRoute = require("./routes/user-purchase");
 const profileRoute = require("./routes/profile");
 const orderRoute = require("./routes/orders");
 
+const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`;
+
 app.use(
   session({
     secret: process.env.SECRET,
     name: "sid",
     resave: false,
     saveUninitialized: false,
-    // store: MongoStore(options),
+    store: MongoStore.create({ mongoUrl: mongoUrl }),
     // rolling: false,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 5,
@@ -65,10 +67,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect(
-  `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`,
-  { useNewUrlParser: true, useUnifiedTopology: true }
-);
+mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 
 mongoose.set("useCreateIndex", true);
 
