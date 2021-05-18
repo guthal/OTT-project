@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000",
+    origin: process.env.DOMAIN,
   })
 );
 
@@ -114,10 +114,9 @@ let port = process.env.PORT;
 if (port == null || port == "") {
   port = 8000;
 }
-app.listen(port,()=>{
-  console.log("server running at port: ",port)
+app.listen(port, () => {
+  console.log("server running at port: ", port);
 });
-
 
 // const PORT = process.env.PORT || 3001;
 // app.listen(PORT, function () {
