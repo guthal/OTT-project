@@ -126,6 +126,7 @@ router.post("/", (req, res) => {
           price: season.price,
           seriesId: req.body[0].seriesId,
           contentSeriesInfo: {
+            seasonId: season.seasonId,
             seasonNo: req.body[0].seasonNo,
             episodeNo: currentEpisodeNo + 1,
           },

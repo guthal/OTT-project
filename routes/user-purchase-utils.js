@@ -51,7 +51,9 @@ const getUserPurchase = (req, res, contentId) => {
       content.map((val) => {
         // TODO: If series ID is present, send the seasonInfo and thumbnail, NOT content
         contentData.push({
-          productId: val.seriesId || val.contentId,
+          productId: val.contentSeriesInfo
+            ? val.contentSeriesInfo.seasonId
+            : val.contentId,
           contentTitle: val.title,
           thumbnail: val.thumbnail,
         });
