@@ -18,7 +18,7 @@ const getUserPurchase = (req, res, contentId) => {
       return Payment.find(
         {
           userId: req.params.userId,
-          contentId: contentIds,
+          productId: contentIds,
         },
         (err, purchase) => {
           if (err || !purchase)
@@ -32,7 +32,7 @@ const getUserPurchase = (req, res, contentId) => {
       purchase.map((val) => {
         purchaseData.push({
           purchaseDate: val.date,
-          contentId: val.contentId,
+          productId: val.productId,
           purchaseId: val.payId,
           purchaseType: val.type,
           purchasePrice: val.amount,
@@ -49,8 +49,9 @@ const getUserPurchase = (req, res, contentId) => {
     })
     .then((content) => {
       content.map((val) => {
+        // TODO: If series ID is present, send the seasonInfo and thumbnail, NOT content
         contentData.push({
-          contentId: val.contentId,
+          productId: val.seriesId || val.contentId,
           contentTitle: val.title,
           thumbnail: val.thumbnail,
         });

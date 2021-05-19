@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
           return res
             .status(404)
             .send({ code: 404, message: "Resource not found" });
-        const data = contents.map(val => {
+        const data = contents.map((val) => {
           return {
             id: val.contentId,
             title: val.title,
