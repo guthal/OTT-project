@@ -3,7 +3,7 @@ const User = require("../model/User");
 const Content = require("../model/Content");
 
 router.get("/", (req, res) => {
-  if (true || req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
     console.log("user who logged into contents: ", req.user);
     Content.find({})
       .sort({ title: "asc" })
@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
           return res
             .status(404)
             .send({ code: 404, message: "Resource not found" });
-        const data = contents.map(val => {
+        const data = contents.map((val) => {
           return {
             id: val.contentId,
             title: val.title,
@@ -24,7 +24,7 @@ router.get("/", (req, res) => {
             thumbnail: val.thumbnail,
             seriesId: val.seriesId,
             contentSeriesInfo: val.contentSeriesInfo,
-            isAvailable:val.isAvailable
+            isAvailable: val.isAvailable,
           };
         });
         res.send(data);

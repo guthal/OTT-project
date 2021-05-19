@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const contentSchema = new Schema({
-  productId: { type: String, required: true, unique: true },
+  contentId: { type: String, required: true, unique: true },
   userId: { type: String, required: true },
   price: {
     b: Number,
@@ -18,7 +18,7 @@ const contentSchema = new Schema({
   thumbnail: String,
   start: Date,
   end: String,
-  isAvailable:Boolean,
+  isAvailable: Boolean,
   seriesId: {
     type: String,
     ref: "Series",

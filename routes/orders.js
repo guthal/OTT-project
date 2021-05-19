@@ -41,7 +41,7 @@ router.post("/success", async (req, res) => {
       razorpayOrderId,
       razorpaySignature,
       userId,
-      contentId,
+      productId,
       amount,
       type,
     } = req.body;
@@ -55,7 +55,7 @@ router.post("/success", async (req, res) => {
 
     const newPayment = new Payment({
       payId: razorpayPaymentId,
-      contentId: contentId,
+      productId: productId,
       userId: userId,
       amount: amount / 100,
       date: Date(Date.now()),
@@ -72,7 +72,7 @@ router.post("/success", async (req, res) => {
       { userId: userId },
       {
         $push: {
-          history: contentId,
+          history: productId,
         },
       }
     ).exec((err, series) => {
