@@ -20,10 +20,18 @@ router.post("/", (req, res) => {
       { username: req.body.username },
       {
         $set: {
-          username: req.body.username,
+          address: req.body.address,
+          office: req.body.office,
+          city: req.body.city,
+          state: req.body.state,
+          zip: req.body.zipcode,
+          phone: req.body.phone,
+          bank: req.body.bankAccount,
+          pan: req.body.panCard,
+          utype: 1,
         },
       },
-      (err) => {
+      err => {
         if (!err) {
           res.send("Succesfully updated");
         } else {

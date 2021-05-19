@@ -103,7 +103,7 @@ app.use("/register", authRoute);
 app.use("/creators", creatorRoute);
 app.use("/series", seriesRoute);
 app.use("/login", loginRoute);
-app.use("/fm/register", fmRegisterRoute);
+app.use("/fm-register", fmRegisterRoute);
 app.use("/content-upload", contentUploadRoute);
 app.use("/user-purchase", userPurchaseRoute);
 app.use("/profile", profileRoute);
