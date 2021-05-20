@@ -145,53 +145,13 @@ router.post("/", (req, res) => {
           );
         } else return Promise.resolve();
       })
-      .then((content) => {
-        res.send(content);
+      .then(() => {
+        return res.send({ message: "success" });
       })
       .catch((err) => {
         res.status(400).send(err.message);
       });
   }
 });
-
-router
-  .route("/content/:userId")
-  .get((req, res) => {
-    if (req.isAuthenticated() && req.user.utype == 0) {
-      User.findOne({ userId: req.params.userId }, function (err, content) {
-        res.render("weekly", {
-          content: content.userId,
-        });
-      });
-    } else {
-      res.status(404).send("404 error page not found");
-    }
-  })
-  .post((req, res) => {
-    // console.log(req.path+" this is the user Id");
-    if (req.isAuthenticated() && req.user.utype == 0) {
-      const content = new Content({
-        contentId: v4(),
-        userId: req.body[0].userId,
-        ticket: req.body[0].ticket,
-        title: req.body[0].title,
-        description: req.body[0].description,
-        weeks: req.body[0].weeks,
-        genre: req.body[0].genre,
-        start: Date.now(),
-        end: endDate.toString(),
-        tag: req.body[0].tag,
-        type: req.body[0].type,
-      });
-      content.save((err) => {
-        console.log("userId is: " + req.body[0].userId);
-        if (err) {
-          console.log(err);
-        } else {
-          res.redirect("/");
-        }
-      });
-    }
-  });
 
 module.exports = router;
