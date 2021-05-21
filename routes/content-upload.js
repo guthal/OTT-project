@@ -116,7 +116,7 @@ router.post("/", (req, res) => {
         return Content.create({
           contentId: v4(),
           cast: req.body[0].cast,
-          genre: req.body[0].genres,
+          genre: req.body[0].season.genre,
           contentUrl: req.body[0].contentUrl,
           userId: req.body[0].creatorId,
           description: req.body[0].description,
