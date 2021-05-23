@@ -43,7 +43,8 @@ router.post("/success", async (req, res) => {
       userId,
       productId,
       amount,
-      type,
+      contentType,
+      purchaseType,
     } = req.body;
 
     const shasum = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
@@ -59,10 +60,10 @@ router.post("/success", async (req, res) => {
       userId: userId,
       amount: amount / 100,
       date: Date(Date.now()),
-      contentType: "test", // need to work on this
+      contentType,
       orderId: razorpayOrderId,
       signature: razorpaySignature,
-      type: type,
+      purchaseType,
       success: true,
     });
 
@@ -72,7 +73,7 @@ router.post("/success", async (req, res) => {
       { userId: userId },
       {
         $push: {
-          history: productId,
+          history: { productId: productId, contentType: contentType },
         },
       }
     ).exec((err, series) => {

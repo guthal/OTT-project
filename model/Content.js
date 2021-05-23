@@ -34,7 +34,7 @@ const contentSchema = new Schema({
   contentLanguage: String,
   ageRestriction: String,
   contentSeriesInfo: {
-    seasonID: String,
+    seasonId: String,
     seriesName: String,
     seasonNo: Number,
     episodeNo: Number,

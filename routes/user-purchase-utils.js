@@ -1,24 +1,40 @@
 const User = require("../model/User");
 const Content = require("../model/Content");
 const Payment = require("../model/Payment");
+const Series = require("../model/Series");
 
 // Util function
-const getUserPurchase = (req, res, contentId) => {
-  const contentData = [];
+const getUserPurchase = (req, res, productId) => {
+  const productData = [];
   const purchaseData = [];
-  let contentIds;
+  let seasonIds = [];
+  let contentIds = [];
   return User.find({ userId: req.params.userId }, (err, user) => {
     if (err || !(user && user[0]))
       return res.status(404).send({ code: 404, message: "User not found" });
   })
     .then((user) => {
-      contentIds = contentId ? [contentId] : user[0].history;
+      const seasonProducts = user[0].history
+        .filter((product) => product.contentType === "series")
+        .map((product) => product.productId);
+      const contentProducts = user[0].history
+        .filter((product) => product.contentType === "content")
+        .map((product) => product.productId);
+
+      if (productId) {
+        if (seasonProducts.includes(productId)) seasonIds.push(productId);
+        else if (contentProducts.includes(productId))
+          contentIds.push(productId);
+      } else {
+        seasonIds = seasonProducts;
+        contentIds = contentProducts;
+      }
     })
     .then(() => {
       return Payment.find(
         {
           userId: req.params.userId,
-          productId: contentIds,
+          productId: [...contentIds, ...seasonIds],
         },
         (err, purchase) => {
           if (err || !purchase)
@@ -34,7 +50,8 @@ const getUserPurchase = (req, res, contentId) => {
           purchaseDate: val.date,
           productId: val.productId,
           purchaseId: val.payId,
-          purchaseType: val.type,
+          purchaseType: val.purchaseType,
+          contentType: val.contentType,
           purchasePrice: val.amount,
         });
       });
@@ -48,19 +65,52 @@ const getUserPurchase = (req, res, contentId) => {
       });
     })
     .then((content) => {
-      content.map((val) => {
+      content.forEach((val) => {
         // TODO: If series ID is present, send the seasonInfo and thumbnail, NOT content
-        contentData.push({
-          productId: val.seriesId || val.contentId,
+        productData.push({
+          productId: val.contentId,
           contentTitle: val.title,
           thumbnail: val.thumbnail,
         });
       });
     })
     .then(() => {
+      return Series.find(
+        { "seasons.seasonId": { $in: seasonIds } },
+        (err, series) => {
+          if (err || !series)
+            return res
+              .status(404)
+              .send({ code: 404, message: "Content not found" });
+        }
+      );
+    })
+    .then((series) => {
+      const seasonsList = [];
+      console.log(series);
+      series.forEach((eachSeries) => {
+        eachSeries.seasons.forEach((season) => {
+          seasonsList.push(season);
+        });
+      });
+      console.log(seasonsList);
+
+      return seasonsList;
+    })
+    .then((seasonsList) => {
+      seasonsList.forEach((season) => {
+        productData.push({
+          productId: season.seasonId,
+          contentTitle: season.title,
+          thumbnail: season.thumbnail,
+        });
+      });
+    })
+
+    .then(() => {
       return purchaseData.map((data) => {
-        const purchaseContent = contentData.find(
-          (content) => content.contentId === data.contentId
+        const purchaseContent = productData.find(
+          (content) => content.productId === data.productId
         );
 
         return {
