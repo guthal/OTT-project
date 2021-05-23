@@ -7,7 +7,7 @@ const { v4 } = require("uuid");
 router.post("/", (req, res) => {
   const action = req.body[0].action;
 
-  const getType = purchaseType => {
+  const getType = (purchaseType) => {
     if (purchaseType.buy > 0 && purchaseType.rent > 0) return "br";
     if (purchaseType.buy > 0) return "b";
     if (purchaseType.rent > 0) return "r";
@@ -90,30 +90,29 @@ router.post("/", (req, res) => {
   } else if (action === "create_episode") {
     let currentEpisodeNo;
     Content.find({ seriesId: req.body[0].seriesId })
-      .then(contents => {
+      .then((contents) => {
         const episodeList = contents
           .filter(
-            content =>
+            (content) =>
               content.contentSeriesInfo.seasonNo === req.body[0].seasonNo
           )
-          .map(content => content.contentSeriesInfo.episodeNo);
+          .map((content) => content.contentSeriesInfo.episodeNo);
         currentEpisodeNo = Math.max(...episodeList, 0);
       })
       .then(() => {
         return Series.findOne({ seriesId: req.body[0].seriesId });
       })
-      .then(series => {
+
+      .then((series) => {
         const seasons = series.seasons;
         const season = seasons.find(
-          season => season.seasonNo === req.body[0].seasonNo
+          (season) => season.seasonNo === req.body[0].seasonNo
         );
-        return season;
-      })
-      .then(season => {
+
         return Content.create({
           contentId: v4(),
           cast: req.body[0].cast,
-          genre: req.body[0].season.genre,
+          genre: series.genre,
           contentUrl: req.body[0].contentUrl,
           userId: req.body[0].creatorId,
           description: req.body[0].description,
@@ -129,7 +128,7 @@ router.post("/", (req, res) => {
           },
         });
       })
-      .then(content => {
+      .then((content) => {
         if (content.contentSeriesInfo.episodeNo === 1) {
           return Series.findOneAndUpdate(
             {
@@ -145,7 +144,7 @@ router.post("/", (req, res) => {
       .then(() => {
         return res.send({ message: "success" });
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(400).send(err.message);
       });
   }

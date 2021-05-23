@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const mongoose = require("mongoose");
 const Payment = require("../model/Payment");
 const User = require("../model/User");
+const Content = require("../model/Content");
 
 const router = express.Router();
 
@@ -54,6 +55,35 @@ router.post("/success", async (req, res) => {
     if (digest !== razorpaySignature)
       return res.status(400).json({ msg: "Transaction not legit!" });
 
+    let creatorId;
+
+    if (contentType === "content") {
+      console.log("entered here");
+      const content = await Content.find(
+        { contentId: productId },
+        (err, product) => {
+          if (err || !product) {
+            console.log(err);
+            return res.status(400).send({ message: "Failed to create season" });
+          }
+          return product;
+        }
+      );
+      creatorId = content[0].userId;
+    } else {
+      const series = await Series.find(
+        { "seasons.seasonId": productId },
+        (err, product) => {
+          if (err || !product) {
+            console.log(err);
+            return res.status(400).send({ message: "Failed to create season" });
+          }
+          return product;
+        }
+      );
+      creatorId = series[0].userId;
+    }
+
     const newPayment = new Payment({
       payId: razorpayPaymentId,
       productId: productId,
@@ -64,6 +94,8 @@ router.post("/success", async (req, res) => {
       orderId: razorpayOrderId,
       signature: razorpaySignature,
       purchaseType,
+      commission: 0.1,
+      creatorId,
       success: true,
     });
 

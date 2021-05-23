@@ -66,7 +66,6 @@ const getUserPurchase = (req, res, productId) => {
     })
     .then((content) => {
       content.forEach((val) => {
-        // TODO: If series ID is present, send the seasonInfo and thumbnail, NOT content
         productData.push({
           productId: val.contentId,
           contentTitle: val.title,

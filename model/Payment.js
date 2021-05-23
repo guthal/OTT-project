@@ -11,6 +11,8 @@ const paymentSchema = new Schema({
   signature: { type: String, required: true },
   purchaseType: { type: String, required: true },
   success: { type: Boolean, required: true },
+  creatorId: String,
+  commission: Number,
 });
 
 module.exports = mongoose.model("Payment", paymentSchema);
