@@ -58,7 +58,6 @@ router.post("/success", async (req, res) => {
     let creatorId;
 
     if (contentType === "content") {
-      console.log("entered here");
       const content = await Content.find(
         { contentId: productId },
         (err, product) => {

@@ -113,6 +113,44 @@ app.use("/logout", logoutRoute);
 app.use("/orders", orderRoute);
 app.use("/watchlist", watchListRoute);
 
+app.post("/query", (req, res) => {
+  Payment.aggregate([
+    {
+      $match: {
+        date: { $gt: req.body.fromDate, $lt: req.body.toDate },
+      },
+    },
+    {
+      $group: {
+        _id: "productId",
+        revenue: { $sum: "$amount" },
+      },
+    },
+  ]).then((payment) => {
+    res.send(payment);
+  });
+
+  // Payment.find({
+  //   creatorId: req.body.creatorId,
+  //   date: { $gt: req.body.fromDate, $lt: req.body.toDate },
+  // }).then((payment) => {
+  //   res.send(payment);
+  // });
+
+  // Payment.where("date")
+  //   .gte(Date(2021, 05, 17)) //last paid date for the creator
+  //   .lte(today.toDate()) //last but one day
+  //   .where("productId", req.body.productId)
+  //   .exec((err, amount) => {
+  //     if (err || !amount) {
+  //       console.log(err);
+  //       return res.status(400).send({ message: "amount not defined" });
+  //     }
+  //     // console.log(moment(2021, 05, 20));
+  //     return res.send({ amount });
+  //   });
+});
+
 let port = process.env.PORT;
 if (port == null || port == "") {
   port = 8000;
