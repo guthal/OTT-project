@@ -15,8 +15,9 @@ router.get("/verify", (req, res) => {
         date: req.user.date,
         utype: req.user.utype,
         history: req.user.history,
-        fname: user[0].fname,
-        lname: user[0].lname,
+        fname: req.user.fname,
+        lname: req.user.lname,
+        watchlist: req.user.watchlist,
       });
     });
   } else {

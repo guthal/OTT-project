@@ -44,6 +44,7 @@ const contentUploadRoute = require("./routes/content-upload");
 const userPurchaseRoute = require("./routes/user-purchase");
 const profileRoute = require("./routes/profile");
 const orderRoute = require("./routes/orders");
+const watchListRoute = require("./routes/watchlist");
 
 const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`;
 
@@ -110,6 +111,7 @@ app.use("/user-purchase", userPurchaseRoute);
 app.use("/profile", profileRoute);
 app.use("/logout", logoutRoute);
 app.use("/orders", orderRoute);
+app.use("/watchlist", watchListRoute);
 
 let port = process.env.PORT;
 if (port == null || port == "") {

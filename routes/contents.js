@@ -4,7 +4,6 @@ const Content = require("../model/Content");
 
 router.get("/", (req, res) => {
   if (req.isAuthenticated()) {
-    console.log("user who logged into contents: ", req.user);
     Content.find({})
       .sort({ title: "asc" })
       .exec((err, contents) => {
@@ -12,7 +11,7 @@ router.get("/", (req, res) => {
           return res
             .status(404)
             .send({ code: 404, message: "Resource not found" });
-        const data = contents.map((val) => {
+        const data = contents.map(val => {
           return {
             id: val.contentId,
             title: val.title,

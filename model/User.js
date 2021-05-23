@@ -18,6 +18,7 @@ const userSchema = new Schema({
   bank: Number,
   date: { type: Date, required: true },
   history: [{ type: String, ref: "Content" }],
+  watchlist: [{ type: String }],
   utype: { type: Number, required: true },
 });
 userSchema.plugin(passportLocalMongoose);
