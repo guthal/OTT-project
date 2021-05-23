@@ -17,7 +17,12 @@ const userSchema = new Schema({
   pan: String,
   bank: Number,
   date: { type: Date, required: true },
-  history: [{ type: String, ref: "Content" }],
+  history: [
+    {
+      contentType: String,
+      productId: String,
+    },
+  ],
   watchlist: [{ type: String }],
   utype: { type: Number, required: true },
 });
