@@ -19,7 +19,6 @@ router.post("/", async (req, res) => {
     req.body.password,
     (err, user) => {
       if (err) {
-        console.log("there is an error: ", err);
         return res
           .status(400)
           .send({ code: 400, message: "Resource not found" });

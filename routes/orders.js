@@ -78,7 +78,6 @@ router.post("/success", async (req, res) => {
       }
     ).exec((err, series) => {
       if (err || !series) {
-        console.log(err);
         return res.status(400).send({ message: "Failed to create season" });
       }
       res.send({

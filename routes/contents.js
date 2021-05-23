@@ -29,7 +29,6 @@ router.get("/", (req, res) => {
         res.send(data);
       });
   } else {
-    console.log(req.isAuthenticated()); //false
     res.status(404).send({ code: 404, message: "user is not authenticated" });
   }
 });

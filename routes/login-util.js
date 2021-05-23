@@ -12,7 +12,6 @@ const login = async (req, res) => {
     });
     req.login(user, err => {
       if (err) {
-        console.log("%s user has error %s ", user, err);
         res.status(401).send("Unauthorised");
       } else {
         passport.authenticate("local")(req, res, () => {

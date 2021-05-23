@@ -120,8 +120,3 @@ if (port == null || port == "") {
 app.listen(port, () => {
   console.log("server running at port: ", port);
 });
-
-// const PORT = process.env.PORT || 3001;
-// app.listen(PORT, function () {
-//   console.log(`Server started on port ${PORT}.. `);
-// });
