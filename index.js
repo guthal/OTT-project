@@ -114,22 +114,29 @@ app.use("/orders", orderRoute);
 app.use("/watchlist", watchListRoute);
 
 app.post("/query", (req, res) => {
-  Payment.aggregate([
-    {
-      $match: {
-        date: { $gt: req.body.fromDate, $lt: req.body.toDate },
-      },
-    },
-    {
-      $group: {
-        _id: "productId",
-        revenue: { $sum: "$amount" },
-      },
-    },
-  ]).then((payment) => {
-    res.send(payment);
-  });
+  var result = [];
+  Payment.find({ creatorId: req.body.creatorId })
+    .where("date")
+    .gte(req.body.fromDate)
+    .lte(req.body.toDate)
+    .exec((err, purchase) => {
+      purchase.reduce((resu, value) => {
+        console.log("value entered here: ", value);
+        if (!resu[value.productId] && !resu[value.purchaseType]) {
+          resu[value.productId] = {
+            purchaseType: value.purchaseType,
+            productId: value.productId,
+            amount: 0,
+          };
+          result.push(resu[value.productId]);
+        }
+        resu[value.productId].amount += value.amount;
+        // console.log("resu values: ", resu);
+        return resu;
+      }, {});
 
+      // console.log("logged purchase:  ", purchase);
+    });
   // Payment.find({
   //   creatorId: req.body.creatorId,
   //   date: { $gt: req.body.fromDate, $lt: req.body.toDate },
