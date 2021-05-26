@@ -46,7 +46,12 @@ router.post("/", async (req, res) => {
           });
         }
       });
-      return res.send(groupedPurchases);
+      return res.send(
+        groupedPurchases.sort((a, b) => {
+          if (a.contentTitle > b.contentTitle) return 1;
+          return -1;
+        })
+      );
     });
 });
 
