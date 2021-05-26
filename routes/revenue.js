@@ -28,15 +28,21 @@ router.post("/", async (req, res) => {
             (1 - purchase.commission) * purchase.amount;
           groupedPurchases[purchaseItemIndex].purchaseCount += 1;
         } else {
-          const contentTitle =
-            purchase.contentType === "content"
-              ? matchedContents.find(
-                  (content) => content.contentId === purchase.productId
-                ).title
-              : matchedContents.find(
-                  (content) =>
-                    content.contentSeriesInfo.seasonId === purchase.productId
-                ).contentSeriesInfo.seasonName;
+          let contentTitle;
+
+          if (purchase.contentType === "content")
+            contentTitle = matchedContents.find(
+              (content) => content.contentId === purchase.productId
+            ).title;
+          else {
+            const series = matchedContents.find(
+              (content) =>
+                content.contentSeriesInfo.seasonId === purchase.productId
+            ).contentSeriesInfo;
+
+            contentTitle = `${series.seriesName}: ${series.seasonName}`;
+          }
+
           groupedPurchases.push({
             productId: purchase.productId,
             purchaseType: purchase.purchaseType,
