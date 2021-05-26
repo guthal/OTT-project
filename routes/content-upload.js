@@ -126,6 +126,8 @@ router.post("/", (req, res) => {
           contentSeriesInfo: {
             seasonId: season.seasonId,
             seasonNo: req.body[0].seasonNo,
+            seasonName: season.title,
+            seriesName: series.seriesName,
             episodeNo: currentEpisodeNo + 1,
           },
         });

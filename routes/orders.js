@@ -2,10 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
-const mongoose = require("mongoose");
 const Payment = require("../model/Payment");
 const User = require("../model/User");
 const Content = require("../model/Content");
+const Series = require("../model/Series");
 
 const router = express.Router();
 
@@ -118,6 +118,7 @@ router.post("/success", async (req, res) => {
       });
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 });

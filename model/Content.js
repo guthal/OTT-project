@@ -42,7 +42,7 @@ const contentSchema = new Schema({
     seriesName: String,
     seasonNo: Number,
     episodeNo: Number,
-    seriesName: String,
+    seasonName: String,
   },
 });
 //make tag required later in production
