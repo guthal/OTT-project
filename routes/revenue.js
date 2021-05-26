@@ -23,7 +23,9 @@ router.post("/", async (req, res) => {
         );
 
         if (purchaseItemIndex >= 0) {
-          groupedPurchases[purchaseItemIndex].amount += purchase.amount;
+          groupedPurchases[purchaseItemIndex].totalRevenue += purchase.amount;
+          groupedPurchases[purchaseItemIndex].earnings +=
+            (1 - purchase.commission) * purchase.amount;
           groupedPurchases[purchaseItemIndex].purchaseCount += 1;
         } else {
           const contentTitle =
@@ -38,8 +40,8 @@ router.post("/", async (req, res) => {
           groupedPurchases.push({
             productId: purchase.productId,
             purchaseType: purchase.purchaseType,
-            commission: purchase.commission,
-            amount: purchase.amount,
+            totalRevenue: purchase.amount,
+            earnings: (1 - purchase.commission) * purchase.amount,
             contentType: purchase.contentType,
             purchaseCount: 1,
             contentTitle,
