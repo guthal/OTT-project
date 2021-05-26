@@ -31,6 +31,10 @@ const contentSchema = new Schema({
   cast: Array,
   duration: Number,
   ratings: Number,
+  commission: {
+    b: Number,
+    r: Number,
+  },
   contentLanguage: String,
   ageRestriction: String,
   contentSeriesInfo: {

@@ -23,6 +23,7 @@ router.post("/", (req, res) => {
         contentUrl: req.body[0].contentUrl,
         userId: req.body[0].creatorId,
         description: req.body[0].description,
+        isAvailable: false,
         title: req.body[0].title,
         thumbnail: req.body[0].thumbnailUrl,
         type: getType(req.body[0].purchaseType),
@@ -68,6 +69,7 @@ router.post("/", (req, res) => {
           seasons: {
             seasonId: v4(),
             seasonNo: req.body[0].seasonNo,
+            isAvailable: false,
             title: req.body[0].title,
             description: req.body[0].description,
             thumbnail: req.body[0].thumbnailUrl,
