@@ -6,7 +6,7 @@ router.get("/", (req, res) => {
   Content.find({ type: "w" }).exec((err, content) => {
     // console.log(content);
     content.map((expires) => {
-      console.log("expires: ", expires.date);
+      //   console.log("expires: ", expires.date);
     });
   });
 });
