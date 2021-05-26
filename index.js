@@ -46,6 +46,7 @@ const profileRoute = require("./routes/profile");
 const orderRoute = require("./routes/orders");
 const watchListRoute = require("./routes/watchlist");
 const conversionRoute = require("./routes/conversion");
+const revenueRoute = require("./routes/revenue");
 
 const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`;
 
@@ -114,38 +115,7 @@ app.use("/logout", logoutRoute);
 app.use("/orders", orderRoute);
 app.use("/watchlist", watchListRoute);
 app.use("/conversion", conversionRoute);
-
-app.post("/query", (req, res) => {
-  const groupedPurchases = [];
-
-  Payment.find({ creatorId: req.body.creatorId })
-    .where("date")
-    .gte(req.body.fromDate)
-    .lte(req.body.toDate)
-    .exec((err, purchases) => {
-      if (err || !purchase)
-        res.status(400).send("Purchases could not be found");
-
-      purchases.forEach((purchase) => {
-        const purchaseItemIndex = groupedPurchases.findIndex(
-          (purchaseContent) =>
-            purchaseContent.productId === purchase.productId &&
-            purchaseContent.purchaseType === purchase.purchaseType
-        );
-
-        if (purchaseItemIndex >= 0)
-          groupedPurchases[purchaseItemIndex].amount += purchase.amount;
-        else
-          groupedPurchases.push({
-            productId: purchase.productId,
-            purchaseType: purchase.purchaseType,
-            commission: purchase.commission,
-            amount: purchase.amount,
-          });
-      });
-      return res.send(groupedPurchases);
-    });
-});
+app.use("/revenue", revenueRoute);
 
 let port = process.env.PORT;
 if (port == null || port == "") {
