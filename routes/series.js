@@ -14,6 +14,7 @@ router.get("/", (req, res) => {
         seriesName: eachSeries.seriesName,
         seriesId: eachSeries.seriesId,
         seasons: eachSeries.seasons,
+        userId: eachSeries.userId,
       }));
       return res.send(seriesData);
     });
