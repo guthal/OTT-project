@@ -116,48 +116,35 @@ app.use("/watchlist", watchListRoute);
 app.use("/conversion", conversionRoute);
 
 app.post("/query", (req, res) => {
-  var result = [];
+  const groupedPurchases = [];
+
   Payment.find({ creatorId: req.body.creatorId })
     .where("date")
     .gte(req.body.fromDate)
     .lte(req.body.toDate)
-    .exec((err, purchase) => {
-      purchase.reduce((resu, value) => {
-        console.log("value entered here: ", value);
-        if (!resu[value.productId] && !resu[value.purchaseType]) {
-          resu[value.productId] = {
-            purchaseType: value.purchaseType,
-            productId: value.productId,
-            amount: 0,
-          };
-          result.push(resu[value.productId]);
-        }
-        resu[value.productId].amount += value.amount;
-        // console.log("resu values: ", resu);
-        return resu;
-      }, {});
+    .exec((err, purchases) => {
+      if (err || !purchase)
+        res.status(400).send("Purchases could not be found");
 
-      // console.log("logged purchase:  ", purchase);
+      purchases.forEach((purchase) => {
+        const purchaseItemIndex = groupedPurchases.findIndex(
+          (purchaseContent) =>
+            purchaseContent.productId === purchase.productId &&
+            purchaseContent.purchaseType === purchase.purchaseType
+        );
+
+        if (purchaseItemIndex >= 0)
+          groupedPurchases[purchaseItemIndex].amount += purchase.amount;
+        else
+          groupedPurchases.push({
+            productId: purchase.productId,
+            purchaseType: purchase.purchaseType,
+            commission: purchase.commission,
+            amount: purchase.amount,
+          });
+      });
+      return res.send(groupedPurchases);
     });
-  // Payment.find({
-  //   creatorId: req.body.creatorId,
-  //   date: { $gt: req.body.fromDate, $lt: req.body.toDate },
-  // }).then((payment) => {
-  //   res.send(payment);
-  // });
-
-  // Payment.where("date")
-  //   .gte(Date(2021, 05, 17)) //last paid date for the creator
-  //   .lte(today.toDate()) //last but one day
-  //   .where("productId", req.body.productId)
-  //   .exec((err, amount) => {
-  //     if (err || !amount) {
-  //       console.log(err);
-  //       return res.status(400).send({ message: "amount not defined" });
-  //     }
-  //     // console.log(moment(2021, 05, 20));
-  //     return res.send({ amount });
-  //   });
 });
 
 let port = process.env.PORT;
