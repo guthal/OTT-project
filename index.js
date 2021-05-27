@@ -47,80 +47,87 @@ const orderRoute = require("./routes/orders");
 const watchListRoute = require("./routes/watchlist");
 const conversionRoute = require("./routes/conversion");
 const revenueRoute = require("./routes/revenue");
+const searchRoute = require("./routes/search");
 
 const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`;
 
-app.use(
-  session({
-    secret: process.env.SECRET,
-    name: "sid",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: mongoUrl }),
-    // rolling: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 5,
-      sameSite: false,
-      // secure: true,
-    },
-  })
-);
-
-//initializing passport
-app.use(passport.initialize());
-app.use(passport.session());
-
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
-
-mongoose.set("useCreateIndex", true);
-
-// mongodb://localhost:27017/contentUpload
-
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "http://localhost:3000*");
-//   res.header("Access-Control-Allow-Credentials", true);
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
-// });
-
-passport.use(User.createStrategy());
-
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
-
-passport.serializeUser(function (user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function (id, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
-  });
-});
-
 //Route middleware
-app.use("/contents", contentRoute);
-app.use("/register", authRoute);
-app.use("/creators", creatorRoute);
-app.use("/series", seriesRoute);
-app.use("/login", loginRoute);
-app.use("/fm-register", fmRegisterRoute);
-app.use("/content-upload", contentUploadRoute);
-app.use("/user-purchase", userPurchaseRoute);
-app.use("/profile", profileRoute);
-app.use("/logout", logoutRoute);
-app.use("/orders", orderRoute);
-app.use("/watchlist", watchListRoute);
-app.use("/conversion", conversionRoute);
-app.use("/revenue", revenueRoute);
+try {
+  app.use(
+    session({
+      secret: process.env.SECRET,
+      name: "sid",
+      resave: false,
+      saveUninitialized: false,
+      store: MongoStore.create({ mongoUrl: mongoUrl }),
+      // rolling: false,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 5,
+        sameSite: false,
+        // secure: true,
+      },
+    })
+  );
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 8000;
+  //initializing passport
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  mongoose.connect(mongoUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  mongoose.set("useCreateIndex", true);
+
+  // mongodb://localhost:27017/contentUpload
+
+  // app.use(function (req, res, next) {
+  //   res.header("Access-Control-Allow-Origin", "http://localhost:3000*");
+  //   res.header("Access-Control-Allow-Credentials", true);
+  //   res.header(
+  //     "Access-Control-Allow-Headers",
+  //     "Origin, X-Requested-With, Content-Type, Accept"
+  //   );
+  //   next();
+  // });
+
+  passport.use(User.createStrategy());
+
+  // passport.serializeUser(User.serializeUser());
+  // passport.deserializeUser(User.deserializeUser());
+
+  passport.serializeUser(function (user, done) {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(function (id, done) {
+    User.findById(id, function (err, user) {
+      done(err, user);
+    });
+  });
+  app.use("/contents", contentRoute);
+  app.use("/register", authRoute);
+  app.use("/creators", creatorRoute);
+  app.use("/series", seriesRoute);
+  app.use("/login", loginRoute);
+  app.use("/fm-register", fmRegisterRoute);
+  app.use("/content-upload", contentUploadRoute);
+  app.use("/user-purchase", userPurchaseRoute);
+  app.use("/profile", profileRoute);
+  app.use("/logout", logoutRoute);
+  app.use("/orders", orderRoute);
+  app.use("/watchlist", watchListRoute);
+  app.use("/conversion", conversionRoute);
+  app.use("/revenue", revenueRoute);
+  app.use("/search", searchRoute);
+  let port = process.env.PORT;
+  if (port == null || port == "") {
+    port = 8000;
+  }
+  app.listen(port, () => {
+    console.log("server running at port: ", port);
+  });
+} catch (e) {
+  console.log(e.message);
 }
-app.listen(port, () => {
-  console.log("server running at port: ", port);
-});

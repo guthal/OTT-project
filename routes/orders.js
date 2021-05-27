@@ -47,6 +47,17 @@ router.post("/success", async (req, res) => {
       contentType,
       purchaseType,
     } = req.body;
+    let commission;
+    if (contentType === "content") {
+      const content = await Content.findOne({ contentId: productId });
+      commission = purchaseType === "w" ? 0 : content.commission[purchaseType];
+    } else {
+      const series = await Series.findOne({ "seasons.seasonId": productId });
+      const season = series.seasons.find(
+        (season) => season.seasonId === productId
+      );
+      commission = season.commission[purchaseType];
+    }
 
     const shasum = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
     shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
@@ -93,7 +104,7 @@ router.post("/success", async (req, res) => {
       orderId: razorpayOrderId,
       signature: razorpaySignature,
       purchaseType,
-      commission: 0.1,
+      commission,
       creatorId,
       success: true,
     });

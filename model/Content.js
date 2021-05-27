@@ -16,8 +16,7 @@ const contentSchema = new Schema({
   genre: Array,
   tag: { type: String },
   thumbnail: String,
-  start: Date,
-  end: String,
+  createdAt: Date,
   isAvailable: Boolean,
   seriesId: {
     type: String,

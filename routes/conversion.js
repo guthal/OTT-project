@@ -9,11 +9,11 @@ router.get("/", (req, res) => {
     const weeklyContent = [];
     content.forEach((expires) => {
       var dates =
-        expires.start.getFullYear() +
+        expires.createdAt.getFullYear() +
         "-" +
-        (expires.start.getMonth() + 1) +
+        (expires.createdAt.getMonth() + 1) +
         "-" +
-        expires.start.getDate();
+        expires.createdAt.getDate();
       const stuff = moment(dates, "YYYY-MM-DD").fromNow();
       if (stuff.search("hour") != -1) {
         date = parseInt(moment(dates, "YYYY-MM-DD").fromNow()) * 0.0417;
@@ -43,7 +43,7 @@ router.get("/", (req, res) => {
     res.send(weeklyContent);
   });
 });
-
+//create post endpoint for conversion
 router.get("/availability", (req, res) => {
   const contentAvailability = [];
   Content.find({ isAvailable: false }, (err, contents) => {
