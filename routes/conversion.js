@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const Content = require("../model/Content");
+const Series = require("../model/Series");
+const _ = require("lodash");
 const moment = require("moment");
 
 router.get("/", (req, res) => {
@@ -42,6 +44,33 @@ router.get("/", (req, res) => {
   });
 });
 
-router.get("/");
+router.get("/availability", (req, res) => {
+  const contentAvailability = [];
+  Content.find({ isAvailable: false }, (err, contents) => {
+    contents.forEach((available) => {
+      console.log(
+        "available content: ",
+        _.isEmpty(available.contentSeriesInfo.seasonId)
+      );
+      if (available.contentSeriesInfo.seasonId) {
+        contentAvailability.push({
+          contentSeriesInfo: available.contentSeriesInfo,
+          contentId: available.contentId,
+          thumbnail: available.thumbnail,
+          title: available.title,
+          description: available.description,
+        });
+      } else {
+        contentAvailability.push({
+          contentId: available.contentId,
+          thumbnail: available.thumbnail,
+          title: available.title,
+          description: available.description,
+        });
+      }
+    });
+    res.send(contentAvailability);
+  });
+});
 
 module.exports = router;
