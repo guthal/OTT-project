@@ -17,6 +17,7 @@ const contentSchema = new Schema({
   tag: { type: String },
   thumbnail: String,
   createdAt: Date,
+  weeklyStartAt: Date,
   isAvailable: Boolean,
   seriesId: {
     type: String,

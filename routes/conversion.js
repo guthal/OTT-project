@@ -10,11 +10,11 @@ router.get("/", (req, res) => {
     const weeklyContent = [];
     content.forEach((expires) => {
       var dates =
-        expires.createdAt.getFullYear() +
+        expires.weeklyStartAt.getFullYear() +
         "-" +
-        (expires.createdAt.getMonth() + 1) +
+        (expires.weeklyStartAt.getMonth() + 1) +
         "-" +
-        expires.createdAt.getDate();
+        expires.weeklyStartAt.getDate();
       const stuff = moment(dates, "YYYY-MM-DD").fromNow();
       if (stuff.search("hour") != -1) {
         date = parseInt(moment(dates, "YYYY-MM-DD").fromNow()) * 0.0417;
@@ -61,7 +61,7 @@ router.post("/:productId", async (req, res) => {
 
     if (req.body.weeks) {
       updateData.weeks = req.body.weeks;
-      updateData.createdAt = new Date();
+      updateData.weeklyStartAt = new Date();
     }
     let updatedContent;
     updatedContent = await Content.findOneAndUpdate(
