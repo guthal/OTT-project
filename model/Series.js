@@ -9,6 +9,7 @@ const seriesSchema = new Schema({
   cast: Array,
   ratings: Number,
   contentLanguage: String,
+  createdAt: Date,
   ageRestriction: String,
   genre: Array,
   type: String,
