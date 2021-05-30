@@ -18,8 +18,6 @@ const userSchema = new Schema({
   zip: Number,
   pan: String,
   bank: Number,
-  dob: Date,
-  gender: String,
   date: { type: Date, required: true },
   history: [
     {
