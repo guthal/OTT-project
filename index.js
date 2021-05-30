@@ -48,6 +48,7 @@ const watchListRoute = require("./routes/watchlist");
 const conversionRoute = require("./routes/conversion");
 const revenueRoute = require("./routes/revenue");
 const searchRoute = require("./routes/search");
+const accountRoute = require("./routes/account");
 
 const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`;
 
@@ -121,6 +122,8 @@ try {
   app.use("/conversion", conversionRoute);
   app.use("/revenue", revenueRoute);
   app.use("/search", searchRoute);
+  app.use("/account", accountRoute);
+
   let port = process.env.PORT;
   if (port == null || port == "") {
     port = 8000;
