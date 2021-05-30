@@ -13,6 +13,8 @@ router.post("/", async (req, res) => {
       fname: req.body.fname,
       lname: req.body.lname,
       username: req.body.username,
+      dateOfBirth: req.body.dateOfBirth,
+      gender: req.body.gender,
       date: Date(Date.now()),
       utype: 2,
     },

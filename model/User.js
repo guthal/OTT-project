@@ -8,6 +8,8 @@ const userSchema = new Schema({
   lname: { type: String, required: true },
   password: String,
   username: { type: String, required: true, unique: true },
+  dateOfBirth: { type: Date, required: true },
+  gender: { type: String, required: true },
   address: String,
   phone: { type: Number, unique: true },
   office: String,
