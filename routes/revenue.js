@@ -63,4 +63,14 @@ router.post("/", async (req, res) => {
     });
 });
 
+// router.post("/", async (req, res) => {});
+
+// retrieves latest date of last paid to the respective creator
+// $group{
+//   _id: "req.params.creatorId",
+//   latest: {
+//     "$last": "$date"
+//   }
+// }
+
 module.exports = router;
