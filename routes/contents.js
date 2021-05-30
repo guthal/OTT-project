@@ -13,21 +13,19 @@ router.get("/", (req, res) => {
             .status(404)
             .send({ code: 404, message: "Resource not found" });
         contents.forEach((val) => {
-          if (val.isAvailable) {
-            videoData.push({
-              id: val.contentId,
-              title: val.title,
-              description: val.description,
-              type: val.type,
-              price: val.price,
-              genre: val.genre,
-              tag: val.tag,
-              thumbnail: val.thumbnail,
-              seriesId: val.seriesId,
-              contentSeriesInfo: val.contentSeriesInfo,
-              isAvailable: val.isAvailable,
-            });
-          }
+          videoData.push({
+            id: val.contentId,
+            title: val.title,
+            description: val.description,
+            type: val.type,
+            price: val.price,
+            genre: val.genre,
+            tag: val.tag,
+            thumbnail: val.thumbnail,
+            seriesId: val.seriesId,
+            contentSeriesInfo: val.contentSeriesInfo,
+            isAvailable: val.isAvailable,
+          });
         });
         res.send(videoData);
       });
