@@ -82,12 +82,4 @@ router.get("/latestDate/:creatorId", (req, res) => {
   });
 });
 
-// retrieves latest date of last paid to the respective creator
-// $group{
-//   _id: "req.params.creatorId",
-//   latest: {
-//     "$last": "$lastPayment"
-//   }
-// }
-
 module.exports = router;
