@@ -67,7 +67,7 @@ try {
       // rolling: false,
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 5,
-        sameSite: false,
+        sameSite: "none",
         secure: true,
       },
     })
