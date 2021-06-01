@@ -65,7 +65,7 @@ try {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 5,
         sameSite: false,
-        // secure: true,
+        secure: true,
       },
     })
   );
