@@ -54,6 +54,8 @@ const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@c
 
 //Route middleware
 try {
+  app.set("trust proxy", 1); // trust first proxy
+
   app.use(
     session({
       secret: process.env.SECRET,
