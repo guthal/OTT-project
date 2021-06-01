@@ -5,8 +5,7 @@ const Schema = mongoose.Schema;
 const accountSchema = new Schema({
   creatorId: { type: String, required: true },
   payId: { type: String, required: true, unique: true },
-  lastPayment: Date,
-  commission: Number,
+  lastPayment: { type: Date, required: true },
   amountPaid: { type: Number, required: true },
   bank: Number,
 });
