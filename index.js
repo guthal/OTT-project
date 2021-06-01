@@ -63,6 +63,7 @@ try {
       resave: false,
       saveUninitialized: false,
       store: MongoStore.create({ mongoUrl: mongoUrl }),
+      proxy: true,
       // rolling: false,
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 5,
