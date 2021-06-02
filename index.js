@@ -56,22 +56,24 @@ const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@c
 try {
   app.set("trust proxy", 1); // trust first proxy
 
-  app.use(
-    session({
-      secret: process.env.SECRET,
-      name: "sid",
-      resave: false,
-      saveUninitialized: false,
-      store: MongoStore.create({ mongoUrl: mongoUrl }),
-      proxy: true,
-      // rolling: false,
-      cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 5,
-        sameSite: "none",
-        secure: true,
-      },
-    })
-  );
+  const sessionOptions = {
+    secret: process.env.SECRET,
+    name: "sid",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: mongoUrl }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 5,
+      secure: false,
+    },
+  };
+  if (app.get(process.env.NODE_ENV) === "production") {
+    app.set("trust proxy", 1);
+    session.cookie.secure = true;
+    (session.cookie.sameSite = "none"), (session.proxy = true);
+  }
+
+  app.use(session(sessionOptions));
 
   //initializing passport
   app.use(passport.initialize());
