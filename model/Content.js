@@ -35,6 +35,7 @@ const contentSchema = new Schema({
     b: Number,
     r: Number,
   },
+  contentUrl: String,
   contentLanguage: String,
   ageRestriction: String,
   contentSeriesInfo: {
