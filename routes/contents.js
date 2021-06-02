@@ -60,6 +60,7 @@ router.get("/:contentId", (req, res) => {
         tag,
         seriesId,
         contentSeriesInfo,
+        contentUrl,
       } = content[0];
       res.send({
         id: contentId,
@@ -77,6 +78,7 @@ router.get("/:contentId", (req, res) => {
         tag,
         seriesId,
         contentSeriesInfo,
+        contentUrl,
       });
     });
   } else {
