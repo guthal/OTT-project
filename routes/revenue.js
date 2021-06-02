@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Payment = require("../model/Payment");
 const Content = require("../model/Content");
+const Account = require("../model/Account");
 
 router.post("/", async (req, res) => {
   const groupedPurchases = [];
@@ -63,14 +64,22 @@ router.post("/", async (req, res) => {
     });
 });
 
-// router.post("/", async (req, res) => {});
-
-// retrieves latest date of last paid to the respective creator
-// $group{
-//   _id: "req.params.creatorId",
-//   latest: {
-//     "$last": "$date"
-//   }
-// }
+router.get("/latestDate/:creatorId", (req, res) => {
+  Account.aggregate([
+    {
+      $group: {
+        _id: req.params.creatorId,
+        latest: {
+          $last: "$lastPayment",
+        },
+      },
+    },
+  ]).exec((err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(result);
+  });
+});
 
 module.exports = router;
