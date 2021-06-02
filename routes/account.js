@@ -1,8 +1,32 @@
 const router = require("express").Router();
 const Account = require("../model/Account");
+const User = require("../model/User");
 
-router.post("/", (req, res) => {
-  Account.create({});
+router.post("/:creatorId", async (req, res) => {
+  const data = await User.findOne(
+    { userId: req.params.creatorId, utype: 1 },
+    (err, user) => {
+      if (err) {
+        console.log(err);
+        res.status(404).send("not a creator");
+      }
+    }
+  );
+  if (data) {
+    await Account({
+      creatorId: data.userId,
+      payId: req.body.payId,
+      lastPayment: Date.now(),
+      amountPaid: req.body.amountPaid,
+    }).save((err, result) => {
+      if (err) {
+        res.send(err);
+      }
+      res.status(200).send("success");
+    });
+  } else {
+    res.status(404).send("not a creator");
+  }
 });
 
 module.exports = router;

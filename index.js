@@ -127,7 +127,7 @@ try {
   app.use("/conversion", conversionRoute);
   app.use("/revenue", revenueRoute);
   app.use("/search", searchRoute);
-  app.use("/account", accountRoute);
+  app.use("/account", accountRoute); //need to pass creatorId in params
 
   let port = process.env.PORT;
   if (port == null || port == "") {
