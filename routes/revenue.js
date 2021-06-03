@@ -64,22 +64,4 @@ router.post("/", async (req, res) => {
     });
 });
 
-router.get("/latestDate/:creatorId", (req, res) => {
-  Account.aggregate([
-    {
-      $group: {
-        _id: req.params.creatorId,
-        latest: {
-          $last: "$lastPayment",
-        },
-      },
-    },
-  ]).exec((err, result) => {
-    if (err) {
-      console.log(err);
-    }
-    console.log(result);
-  });
-});
-
 module.exports = router;
