@@ -8,7 +8,7 @@ router.post("/:creatorId", async (req, res) => {
     (err, user) => {
       if (err) {
         console.log(err);
-        res.status(404).send("not a creator");
+        res.status(400).send("not a creator");
       }
     }
   );
@@ -25,8 +25,26 @@ router.post("/:creatorId", async (req, res) => {
       res.status(200).send("success");
     });
   } else {
-    res.status(404).send("not a creator");
+    res.status(400).send("not a creator");
   }
+});
+
+router.get("/last-pay/:creatorId", (req, res) => {
+  Account.aggregate([
+    {
+      $group: {
+        _id: req.params.creatorId,
+        lastPayDate: {
+          $last: "$lastPayment",
+        },
+      },
+    },
+  ]).exec((err, result) => {
+    if (err) {
+      res.status(400).send(err);
+    }
+    res.send(result);
+  });
 });
 
 module.exports = router;
