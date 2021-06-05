@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const User = require("../model/User");
+const Payment = require("../model/Payment");
+const Account = require("../model/Account");
 
 router.get("/", function (req, res) {
   if (req.isAuthenticated()) {
@@ -31,7 +33,7 @@ router.post("/", (req, res) => {
           utype: 1,
         },
       },
-      err => {
+      (err) => {
         if (!err) {
           res.send("Succesfully updated");
         } else {
@@ -41,6 +43,33 @@ router.post("/", (req, res) => {
     );
   } else {
     res.status(403).send("forbidden");
+  }
+});
+
+router.get("/update/:creatorId", async (req, res) => {
+  //TODO: add isAuthenticated for testing we have'nt put
+  const verify = await User.exists({ userId: req.params.creatorId });
+  const noPay = await Account.exists({ creatorId: req.params.creatorId });
+  console.log("No pay value: ", noPay);
+  if (verify) {
+    if (!noPay) {
+      await Account({
+        creatorId: req.params.creatorId,
+        payId: "initial transaction",
+        lastPayment: Date.now(),
+        amountPaid: 0,
+        remark: "initial transaction",
+      }).save((err, result) => {
+        if (err) {
+          res.send(err);
+        }
+        res.status(200).send("success");
+      });
+    } else {
+      res.send("no need to update transaction is done"); //TODO: need to add a proper status code
+    }
+  } else {
+    res.send("Not a verified user");
   }
 });
 
