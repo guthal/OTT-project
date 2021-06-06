@@ -19,12 +19,6 @@ const nodemailer = require("nodemailer");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.DEVELOPMENT || process.env.DOMAIN,
-  })
-);
 
 //models import
 const User = require("./model/User");
@@ -67,10 +61,10 @@ try {
     },
   };
   if (app.get(process.env.NODE_ENV) === "production") {
-    // app.set("trust proxy", 1);
+    app.set("trust proxy", 1);
     sessionOptions.cookie.secure = true;
     sessionOptions.cookie.sameSite = "none";
-    // sessionOptions.proxy = true;
+    sessionOptions.proxy = true;
   }
 
   app.use(session(sessionOptions));
@@ -78,6 +72,13 @@ try {
   //initializing passport
   app.use(passport.initialize());
   app.use(passport.session());
+
+  app.use(
+    cors({
+      credentials: true,
+      origin: process.env.DEVELOPMENT || process.env.DOMAIN,
+    })
+  );
 
   mongoose.connect(mongoUrl, {
     useNewUrlParser: true,
