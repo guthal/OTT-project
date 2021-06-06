@@ -48,6 +48,7 @@ router.post("/", (req, res) => {
 
 router.get("/update/:creatorId", async (req, res) => {
   //TODO: add isAuthenticated for testing we have'nt put
+  //check if the user is a creator First
   const verify = await User.exists({ userId: req.params.creatorId });
   const noPay = await Account.exists({ creatorId: req.params.creatorId });
   console.log("No pay value: ", noPay);
