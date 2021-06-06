@@ -60,7 +60,7 @@ try {
       maxAge: 1000 * 60 * 60 * 24 * 5,
     },
   };
-  if (app.get(process.env.NODE_ENV) === "production") {
+  if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1);
     sessionOptions.cookie.secure = true;
     sessionOptions.cookie.sameSite = "none";
