@@ -61,7 +61,7 @@ router.post("/:productId", async (req, res) => {
 
     if (req.body.weeks) {
       updateData.weeks = req.body.weeks;
-      updateData.weeklyStartAt = new Date();
+      updateData.weeklyStartAt = req.body.weeklyStartAt;
     }
     let updatedContent;
     updatedContent = await Content.findOneAndUpdate(
