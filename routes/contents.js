@@ -26,6 +26,7 @@ router.get("/", (req, res) => {
             contentSeriesInfo: val.contentSeriesInfo,
             isAvailable: val.isAvailable,
             weeks: val.weeks,
+            weeklyStartAt: val.weeklyStartAt,
           });
         });
         res.send(videoData);
