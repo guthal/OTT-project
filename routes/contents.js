@@ -26,6 +26,7 @@ router.get("/", (req, res) => {
             contentSeriesInfo: val.contentSeriesInfo,
             isAvailable: val.isAvailable,
             weeks: val.weeks,
+            weeklyStartAt: val.weeklyStartAt,
           });
         });
         res.send(videoData);
@@ -60,6 +61,7 @@ router.get("/:contentId", (req, res) => {
         tag,
         seriesId,
         contentSeriesInfo,
+        contentUrl,
       } = content[0];
       res.send({
         id: contentId,
@@ -77,6 +79,7 @@ router.get("/:contentId", (req, res) => {
         tag,
         seriesId,
         contentSeriesInfo,
+        contentUrl,
       });
     });
   } else {
