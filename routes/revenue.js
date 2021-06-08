@@ -64,4 +64,37 @@ router.post("/", async (req, res) => {
     });
 });
 
+router.post("/summary", (req, res) => {
+  //TODO: add authetication only for creators i.e. utype:1
+  Payment.aggregate([
+    {
+      $match: {
+        productId: req.body.productId,
+        date: {
+          $gte: new Date(req.body.fromDate),
+          $lte: new Date(req.body.toDate),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          date: {
+            $dateToString: { format: "%Y-%m-%d", date: "$date" },
+          },
+          purchaseType: "$purchaseType",
+        },
+        sumAmount: {
+          $sum: "$amount",
+        },
+      },
+    },
+  ]).exec((err, result) => {
+    if (err) {
+      res.status(400).send(err);
+    }
+    res.send(result);
+  });
+});
+
 module.exports = router;

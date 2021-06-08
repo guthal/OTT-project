@@ -8,6 +8,7 @@ const accountSchema = new Schema({
   lastPayment: { type: Date, required: true },
   amountPaid: { type: Number, required: true },
   bank: Number,
+  remark: String, //TODO: make required true in production
 });
 accountSchema.plugin(passportLocalMongoose);
 

@@ -4,6 +4,7 @@ const User = require("../model/User");
 
 router.post("/:creatorId", async (req, res) => {
   const data = await User.findOne(
+    // TODO: add exists query for this Endpoint
     { userId: req.params.creatorId, utype: 1 },
     (err, user) => {
       if (err) {
