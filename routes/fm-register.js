@@ -16,9 +16,9 @@ router.get("/", function (req, res) {
 });
 //need to access the user and patch some information
 //need to test it
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   if (req.isAuthenticated() && req.user.utype === 0) {
-    User.updateOne(
+    await User.updateOne(
       { username: req.body.username },
       {
         $set: {
@@ -41,6 +41,25 @@ router.post("/", (req, res) => {
         }
       }
     );
+    const user = await User.find({ username: req.body.username });
+    const noPay = await Account.exists({ creatorId: user.userId });
+    console.log("user: ", user);
+    if (!noPay) {
+      await Account({
+        creatorId: user.userId,
+        payId: "initial transaction",
+        lastPayment: Date.now(),
+        amountPaid: 0,
+        remark: "initial transaction",
+      }).save((err, result) => {
+        if (err) {
+          res.send(err);
+        }
+        res.status(200).send("success");
+      });
+    } else {
+      res.status(400).send("no need to update transaction is done"); //TODO: need to add a proper status code
+    }
   } else {
     res.status(403).send("forbidden");
   }
