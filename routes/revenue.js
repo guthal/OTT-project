@@ -64,16 +64,15 @@ router.post("/", async (req, res) => {
     });
 });
 
-router.get("/summaryContent/:productId", (req, res) => {
+router.post("/summary", (req, res) => {
   //TODO: add authetication only for creators i.e. utype:1
   Payment.aggregate([
     {
       $match: {
-        creatorId: "33b44421-cec7-432b-84e8-d5e17512071f", //TODO: add req.user.creatorId
-        productId: req.params.productId,
+        productId: req.body.productId,
         date: {
-          $gte: new Date(req.body.fromDate + "T00:00:00.000+00:00"),
-          $lte: new Date(req.body.toDate + "T23:59:59.000+00:00"),
+          $gte: new Date(req.body.fromDate),
+          $lte: new Date(req.body.toDate),
         },
       },
     },
