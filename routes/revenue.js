@@ -68,7 +68,9 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/invoice", (req, res) => {
-  pdfGen(req, res);
+  pdfGen(req, res).then(() => {
+    res.send("success");
+  });
 });
 
 router.get("/summaryContent/:productId", async (req, res) => {

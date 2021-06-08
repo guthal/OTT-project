@@ -32,9 +32,9 @@
           </tr>
           <% payment.forEach(payment => {%>
           <tr>
-            <td><%= payment._id.productId %></td>
-            <td><%= payment._id.date %></td>
-            <td><%= payment._id.purchaseType %></td>
+            <td><%= payment.productId %></td>
+            <td><%= payment.date %></td>
+            <td><%= payment.purchaseType %></td>
             <td><%= payment.revenue %></td>
             <td><%= payment.earnings %></td>
           </tr>
