@@ -4,7 +4,6 @@ let path = require("path");
 const Payment = require("../model/Payment");
 const Content = require("../model/Content");
 const nodemailer = require("nodemailer");
-const { getMaxListeners } = require("../model/Payment");
 const fs = require("fs");
 
 const pdfGen = async (req, res) => {
@@ -90,30 +89,28 @@ const pdfGen = async (req, res) => {
         };
         pdf
           .create(data, options)
-          .toFile("../ott-project/reportearn4.pdf", function (err, data) {
+          .toFile("../ott-project/reportearn6.pdf", function (err, data) {
             //TODO: add req.body.username append username and from date and To date to the filename
             if (err) {
               return res.send(err);
             } else {
-              console.log("Report generated");
-              console.log(process.env.EMAIL, process.env.PASS);
               // return res.send({ status: "success", data: data });
               let transporter = nodemailer.createTransport({
                 service: "gmail",
                 auth: {
                   user: process.env.EMAIL || "abc@gmail.com", // TODO: your gmail account
-                  pass: process.env.PASS || "1234", // TODO: your gmail password
+                  pass: process.env.PASSWORD || "1234", // TODO: your gmail password
                 },
               });
 
               // Step 2
               let mailOptions = {
                 from: process.env.EMAIL, // TODO: email sender
-                to: "hpm34524@eoopy.com" || "vg931697@gmail.com", // TODO: email receiver
+                to: "vg931697@gmail.com", // TODO: email receiver
                 subject: "Nodemailer - Test",
                 text: "Wooohooo it works!!",
                 attachments: [
-                  { filename: "reportearn4.pdf", path: "./reportearn4.pdf" }, // TODO: replace it with your own image
+                  { filename: "reportearn6.pdf", path: "./reportearn6.pdf" }, // TODO: replace it with your own image
                 ],
               };
 
@@ -122,7 +119,7 @@ const pdfGen = async (req, res) => {
                 if (err) {
                   return console.log("Error occurs:", err);
                 }
-                fs.unlink("../ott-project/reportearn4.pdf", (err) => {
+                fs.unlink("../ott-project/reportearn6.pdf", (err) => {
                   if (err) {
                     throw err;
                   }
