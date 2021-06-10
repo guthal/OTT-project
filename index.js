@@ -113,6 +113,7 @@ try {
       done(err, user);
     });
   });
+
   app.use("/contents", contentRoute);
   app.use("/register", authRoute);
   app.use("/creators", creatorRoute);

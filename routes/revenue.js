@@ -3,8 +3,7 @@ const Payment = require("../model/Payment");
 const Content = require("../model/Content");
 const Account = require("../model/Account");
 const pdfGen = require("./pdfGen");
-const invoiceUtil = require("./invoice-util");
-const invoice = require("./invoice-util");
+// const invoice = require("./invoice-util");
 
 router.post("/", async (req, res) => {
   const groupedPurchases = [];
