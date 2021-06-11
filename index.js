@@ -43,6 +43,7 @@ const conversionRoute = require("./routes/conversion");
 const revenueRoute = require("./routes/revenue");
 const searchRoute = require("./routes/search");
 const accountRoute = require("./routes/account");
+const forgotRoute = require("./routes/forgot");
 
 const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`;
 
@@ -113,6 +114,7 @@ try {
       done(err, user);
     });
   });
+
   app.use("/contents", contentRoute);
   app.use("/register", authRoute);
   app.use("/creators", creatorRoute);
@@ -129,6 +131,7 @@ try {
   app.use("/revenue", revenueRoute);
   app.use("/search", searchRoute);
   app.use("/account", accountRoute); //need to pass creatorId in params
+  app.use("/forgot", forgotRoute);
 
   let port = process.env.PORT;
   if (port == null || port == "") {

@@ -10,6 +10,8 @@ router.post("/", (req, res) => {
   });
 });
 
+//TODO:auto complete needs to be done
+
 //searches for creator by email, by fname, by lname
 router.post("/creator", (req, res) => {
   const userData = []; //frontend should send email through body

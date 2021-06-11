@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Payment = require("../model/Payment");
 const Content = require("../model/Content");
-const Account = require("../model/Account");
+const pdfGen = require("./pdfGen");
 
 router.post("/", async (req, res) => {
   const groupedPurchases = [];
@@ -62,6 +62,10 @@ router.post("/", async (req, res) => {
         })
       );
     });
+});
+
+router.post("/invoice", (req, res) => {
+  pdfGen(req, res);
 });
 
 router.post("/summary", (req, res) => {

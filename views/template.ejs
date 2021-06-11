@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #ddd;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        text-align: left;
+        padding: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="width: 85%; margin: 0 7.5%">
+      <div style="text-align: center; padding-left: 50px">
+        <h2>AVscope</h2>
+        <h3>Revenue Summary</h3>
+        <table>
+          <% if (payment.length > 0) { %>
+          <tr>
+            <th>Content Name</th>
+            <th>date</th>
+            <th>PurchaseType</th>
+            <th>revenue</th>
+            <th>Earnings</th>
+          </tr>
+          <% payment.forEach(payment => {%>
+          <tr>
+            <td><%= payment.productId %></td>
+            <td><%= payment.date %></td>
+            <td><%= payment.purchaseType %></td>
+            <td><%= payment.revenue %></td>
+            <td><%= payment.earnings %></td>
+          </tr>
+          <% });%> <% }%>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
