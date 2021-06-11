@@ -28,6 +28,7 @@ const userSchema = new Schema({
   watchlist: [{ type: String }],
   utype: { type: Number, required: true },
   verified: { type: Boolean, required: true },
+  reset: { type: Boolean, required: true },
 });
 userSchema.plugin(passportLocalMongoose);
 
