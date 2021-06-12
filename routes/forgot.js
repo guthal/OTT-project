@@ -64,12 +64,27 @@ router.post("/", async (req, res) => {
 router.post("/reset/:id", async (req, res) => {
   //TODO: add isAuthenticated
   const data = await User.findOne({ userId: req.params.id });
-
+  //TODO: check for asyn await
   if (data.reset) {
     data.setPassword(req.body.newPassword, () => {
       data.save();
-      res.status(200).json({ message: "password reset successful" });
+      // res.status(200).json({ message: "password reset successful" });
     });
+    User.updateOne(
+      { userId: data.userId },
+      {
+        $set: {
+          reset: 0,
+        },
+      },
+      (err) => {
+        if (!err) {
+          res
+            .status(200)
+            .send({ message: "password reset and flag set to false" });
+        }
+      }
+    );
   } else {
     res.send("please go back to your login"); //redirect to login
   }
