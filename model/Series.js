@@ -9,6 +9,7 @@ const seriesSchema = new Schema({
   cast: Array,
   ratings: Number,
   contentLanguage: String,
+  createdAt: Date,
   ageRestriction: String,
   genre: Array,
   type: String,
@@ -17,7 +18,7 @@ const seriesSchema = new Schema({
     r: Number,
     w: Number,
   },
-  seasons: Array,//need to add isAvailable flag into season array
+  seasons: Array, //need to add isAvailable flag into season array and commission
   thumbnail: String,
 });
 

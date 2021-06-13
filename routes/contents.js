@@ -4,6 +4,7 @@ const Content = require("../model/Content");
 
 router.get("/", (req, res) => {
   if (req.isAuthenticated()) {
+    const videoData = [];
     Content.find({})
       .sort({ title: "asc" })
       .exec((err, contents) => {
@@ -11,8 +12,8 @@ router.get("/", (req, res) => {
           return res
             .status(404)
             .send({ code: 404, message: "Resource not found" });
-        const data = contents.map(val => {
-          return {
+        contents.forEach((val) => {
+          videoData.push({
             id: val.contentId,
             title: val.title,
             description: val.description,
@@ -24,9 +25,11 @@ router.get("/", (req, res) => {
             seriesId: val.seriesId,
             contentSeriesInfo: val.contentSeriesInfo,
             isAvailable: val.isAvailable,
-          };
+            weeks: val.weeks,
+            weeklyStartAt: val.weeklyStartAt,
+          });
         });
-        res.send(data);
+        res.send(videoData);
       });
   } else {
     res.status(404).send({ code: 404, message: "user is not authenticated" });
@@ -58,6 +61,7 @@ router.get("/:contentId", (req, res) => {
         tag,
         seriesId,
         contentSeriesInfo,
+        contentUrl,
       } = content[0];
       res.send({
         id: contentId,
@@ -75,6 +79,7 @@ router.get("/:contentId", (req, res) => {
         tag,
         seriesId,
         contentSeriesInfo,
+        contentUrl,
       });
     });
   } else {

@@ -16,8 +16,8 @@ const contentSchema = new Schema({
   genre: Array,
   tag: { type: String },
   thumbnail: String,
-  start: Date,
-  end: String,
+  createdAt: Date,
+  weeklyStartAt: Date,
   isAvailable: Boolean,
   seriesId: {
     type: String,
@@ -31,6 +31,11 @@ const contentSchema = new Schema({
   cast: Array,
   duration: Number,
   ratings: Number,
+  commission: {
+    b: Number,
+    r: Number,
+  },
+  contentUrl: String,
   contentLanguage: String,
   ageRestriction: String,
   contentSeriesInfo: {
@@ -38,7 +43,7 @@ const contentSchema = new Schema({
     seriesName: String,
     seasonNo: Number,
     episodeNo: Number,
-    seriesName: String,
+    seasonName: String,
   },
 });
 //make tag required later in production

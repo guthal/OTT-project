@@ -45,110 +45,104 @@ const userPurchaseRoute = require("./routes/user-purchase");
 const profileRoute = require("./routes/profile");
 const orderRoute = require("./routes/orders");
 const watchListRoute = require("./routes/watchlist");
+const conversionRoute = require("./routes/conversion");
+const revenueRoute = require("./routes/revenue");
+const searchRoute = require("./routes/search");
+const accountRoute = require("./routes/account");
 
 const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`;
 
-app.use(
-  session({
+//Route middleware
+try {
+  app.set("trust proxy", 1); // trust first proxy
+
+  const sessionOptions = {
     secret: process.env.SECRET,
     name: "sid",
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: mongoUrl }),
-    // rolling: false,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 5,
-      sameSite: false,
-      // secure: true,
     },
-  })
-);
+  };
+  if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+    sessionOptions.cookie.secure = true;
+    sessionOptions.cookie.sameSite = "none";
+    sessionOptions.proxy = true;
+  }
 
-//initializing passport
-app.use(passport.initialize());
-app.use(passport.session());
+  app.use(session(sessionOptions));
 
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
+  //initializing passport
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-mongoose.set("useCreateIndex", true);
+  app.use(
+    cors({
+      credentials: true,
+      origin: process.env.DEVELOPMENT || process.env.DOMAIN,
+    })
+  );
 
-// mongodb://localhost:27017/contentUpload
-
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "http://localhost:3000*");
-//   res.header("Access-Control-Allow-Credentials", true);
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
-// });
-
-passport.use(User.createStrategy());
-
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
-
-passport.serializeUser(function (user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function (id, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
+  mongoose.connect(mongoUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
   });
-});
 
-//Route middleware
-app.use("/contents", contentRoute);
-app.use("/register", authRoute);
-app.use("/creators", creatorRoute);
-app.use("/series", seriesRoute);
-app.use("/login", loginRoute);
-app.use("/fm-register", fmRegisterRoute);
-app.use("/content-upload", contentUploadRoute);
-app.use("/user-purchase", userPurchaseRoute);
-app.use("/profile", profileRoute);
-app.use("/logout", logoutRoute);
-app.use("/orders", orderRoute);
-app.use("/watchlist", watchListRoute);
+  mongoose.set("useCreateIndex", true);
 
-app.post("/query", (req, res) => {
-  const groupedPurchases = [];
+  // mongodb://localhost:27017/contentUpload
 
-  Payment.find({ creatorId: req.body.creatorId })
-    .where("date")
-    .gte(req.body.fromDate)
-    .lte(req.body.toDate)
-    .exec((err, purchases) => {
-      if (err || !purchase)
-        res.status(400).send("Purchases could not be found");
+  // app.use(function (req, res, next) {
+  //   res.header("Access-Control-Allow-Origin", "http://localhost:3000*");
+  //   res.header("Access-Control-Allow-Credentials", true);
+  //   res.header(
+  //     "Access-Control-Allow-Headers",
+  //     "Origin, X-Requested-With, Content-Type, Accept"
+  //   );
+  //   next();
+  // });
 
-      purchases.forEach((purchase) => {
-        const purchaseItemIndex = groupedPurchases.findIndex(
-          (purchaseContent) =>
-            purchaseContent.productId === purchase.productId &&
-            purchaseContent.purchaseType === purchase.purchaseType
-        );
+  passport.use(User.createStrategy());
 
-        if (purchaseItemIndex >= 0)
-          groupedPurchases[purchaseItemIndex].amount += purchase.amount;
-        else
-          groupedPurchases.push({
-            productId: purchase.productId,
-            purchaseType: purchase.purchaseType,
-            commission: purchase.commission,
-            amount: purchase.amount,
-          });
-      });
-      return res.send(groupedPurchases);
+  // passport.serializeUser(User.serializeUser());
+  // passport.deserializeUser(User.deserializeUser());
+
+  passport.serializeUser(function (user, done) {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(function (id, done) {
+    User.findById(id, function (err, user) {
+      done(err, user);
     });
-});
+  });
+  app.use("/contents", contentRoute);
+  app.use("/register", authRoute);
+  app.use("/creators", creatorRoute);
+  app.use("/series", seriesRoute);
+  app.use("/login", loginRoute);
+  app.use("/fm-register", fmRegisterRoute);
+  app.use("/content-upload", contentUploadRoute);
+  app.use("/user-purchase", userPurchaseRoute);
+  app.use("/profile", profileRoute);
+  app.use("/logout", logoutRoute);
+  app.use("/orders", orderRoute);
+  app.use("/watchlist", watchListRoute);
+  app.use("/conversion", conversionRoute);
+  app.use("/revenue", revenueRoute);
+  app.use("/search", searchRoute);
+  app.use("/account", accountRoute); //need to pass creatorId in params
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 8000;
+  let port = process.env.PORT;
+  if (port == null || port == "") {
+    port = 8000;
+  }
+  app.listen(port, () => {
+    console.log("server running at port: ", port);
+  });
+} catch (e) {
+  console.log(e.message);
 }
-app.listen(port, () => {
-  console.log("server running at port: ", port);
-});
