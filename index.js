@@ -19,6 +19,12 @@ const nodemailer = require("nodemailer");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: process.env.DEVELOPMENT || process.env.DOMAIN,
+//   })
+// );
 
 //models import
 const User = require("./model/User");
