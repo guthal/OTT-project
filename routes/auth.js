@@ -65,7 +65,7 @@ router.post("/", async (req, res) => {
 router.get("/verify/:id", async (req, res) => {
   const data = await User.find({ userId: req.params.id });
   if (data[0].verified) {
-    res.send(`you are already verified ${data[0].fname}`);
+    res.send(`already verified`);
   } else {
     await User.updateOne(
       { userId: data[0].userId },
@@ -76,9 +76,7 @@ router.get("/verify/:id", async (req, res) => {
       },
       err => {
         if (!err) {
-          res.send(
-            `thanks for the verification ${data[0].fname} you can now log back in ${err}`
-          ); //or else redirect the user to the main page
+          res.send(`email verified`); //or else redirect the user to the main page
         } else {
           res.send("Error: ", err);
         }

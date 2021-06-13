@@ -6,7 +6,7 @@ router.post("/", async (req, res) => {
   //TODO: add isAuthenticated
   // add a flag to reset password
   //mailing
-  const userExist = await User.findOne({ username: req.body.email });
+  const userExist = await User.findOne({ username: req.body.username });
   if (userExist) {
     if (!userExist.reset) {
       await User.updateOne(
@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
             reset: 1,
           },
         },
-        (err) => {
+        err => {
           if (!err) {
             res.send(`please check the email inbox so you can now log back in`); //or else redirect the user to the main page
           } else {
@@ -35,9 +35,9 @@ router.post("/", async (req, res) => {
       // Step 2
       let mailOptions = {
         from: process.env.EMAIL, // TODO: email sender
-        to: req.body.email, // TODO: email receiver
+        to: req.body.username, // TODO: email receiver
         subject: "Nodemailer - Test",
-        html: `<h2>Hello!! </h2> <br> <h4>here is your reset link please click to change the password http://localhost:3000/forgot/reset/${userExist.userId}</h4>`,
+        html: `<h2>Hello!! </h2> <br> <h4>here is your reset link please click to change the password ${process.env.DOMAIN}/forgot-password/reset/${userExist.userId}</h4>`,
         // text: "Wooohooo it works!!",
         //need to change the domain link later to avscope.in
       };
@@ -47,17 +47,13 @@ router.post("/", async (req, res) => {
         if (err) {
           return console.log("Error occurs:", err);
         }
-        res.send(
-          "please check your email account for reset link and click on the given link!!"
-        );
+        res.send("reset link sent");
       });
     } else {
-      res.send(
-        "Please check your email inbox as we have sent the reset link already "
-      );
+      res.send("link sent already");
     }
   } else {
-    res.send("user Does not exist!!");
+    res.send("non-existent username");
   }
 });
 
@@ -77,7 +73,7 @@ router.post("/reset/:id", async (req, res) => {
           reset: 0,
         },
       },
-      (err) => {
+      err => {
         if (!err) {
           res
             .status(200)

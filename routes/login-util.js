@@ -26,6 +26,7 @@ const login = async (req, res) => {
               date: req.user.date,
               utype: req.user.utype,
               history: req.user.history,
+              verified: req.user.verified,
               fname: userData[0].fname,
               lname: userData[0].lname,
             });
