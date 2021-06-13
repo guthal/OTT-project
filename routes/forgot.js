@@ -10,7 +10,7 @@ router.post("/", async (req, res) => {
   if (userExist) {
     if (!userExist.reset) {
       await User.updateOne(
-        { username: req.body.email },
+        { username: req.body.username },
         {
           $set: {
             reset: 1,
