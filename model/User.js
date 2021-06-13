@@ -8,6 +8,8 @@ const userSchema = new Schema({
   lname: { type: String, required: true },
   password: String,
   username: { type: String, required: true, unique: true },
+  dateOfBirth: { type: Date, required: true },
+  gender: { type: String, required: true },
   address: String,
   phone: { type: Number, unique: true },
   office: String,
@@ -16,8 +18,6 @@ const userSchema = new Schema({
   zip: Number,
   pan: String,
   bank: Number,
-  dob: Date,
-  gender: String,
   date: { type: Date, required: true },
   history: [
     {
@@ -28,6 +28,7 @@ const userSchema = new Schema({
   watchlist: [{ type: String }],
   utype: { type: Number, required: true },
   verified: { type: Boolean, required: true },
+  reset: { type: Boolean, required: true },
 });
 userSchema.plugin(passportLocalMongoose);
 

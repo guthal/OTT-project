@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
     console.log("user: ", user);
     if (!noPay) {
       await Account({
-        creatorId: user.userId,
+        creatorId: user[0].userId,
         payId: "initial transaction",
         lastPayment: Date.now(),
         amountPaid: 0,

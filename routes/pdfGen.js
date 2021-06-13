@@ -2,7 +2,7 @@ let ejs = require("ejs");
 let pdf = require("html-pdf");
 let path = require("path");
 const Payment = require("../model/Payment");
-const Content = require("../model/Content");
+const User = require("../model/User");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 
@@ -11,10 +11,10 @@ const pdfGen = async (req, res) => {
   const paymentAggregate = await Payment.aggregate([
     {
       $match: {
-        creatorId: "f19e82a0-12ab-4890-8955-4d81abc1b7d6", //TODO: req.body.creatorId
+        creatorId: req.body.creatorId, //TODO: req.body.creatorId
         date: {
-          $gte: new Date("2021-05-01T00:00:00.000+00:00"),
-          $lte: new Date("2021-06-06T23:59:59.000+00:00"),
+          $gte: req.body.fromDate,
+          $lte: req.body.toDate,
         },
       },
     },
@@ -68,7 +68,8 @@ const pdfGen = async (req, res) => {
     });
   });
 
-  console.log("contetnt Info: ", contentInfo);
+  console.log("from date: ", req.body.fromDate);
+  console.log("to date: ", req.body.toDate);
 
   ejs.renderFile(
     path.join(__dirname, "../views/", "template.ejs"),
@@ -89,7 +90,7 @@ const pdfGen = async (req, res) => {
         };
         pdf
           .create(data, options)
-          .toFile("../ott-project/reportearn6.pdf", function (err, data) {
+          .toFile("../ott-project/reportearn6.pdf", async (err, data) => {
             //TODO: add req.body.username append username and from date and To date to the filename
             if (err) {
               return res.send(err);
@@ -102,11 +103,14 @@ const pdfGen = async (req, res) => {
                   pass: process.env.PASSWORD || "1234", // TODO: your gmail password
                 },
               });
-
+              const user = await User.findOne({
+                userId: req.body.creatorId,
+              }).select("username");
+              console.log("email: ", user);
               // Step 2
               let mailOptions = {
                 from: process.env.EMAIL, // TODO: email sender
-                to: "vg931697@gmail.com", // TODO: email receiver
+                to: user.username, // TODO: email receiver
                 subject: "Nodemailer - Test",
                 text: "Wooohooo it works!!",
                 attachments: [

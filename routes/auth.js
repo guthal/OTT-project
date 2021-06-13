@@ -14,14 +14,16 @@ router.post("/", async (req, res) => {
       fname: req.body.fname,
       lname: req.body.lname,
       username: req.body.username,
+      dateOfBirth: req.body.dateOfBirth,
+      gender: req.body.gender,
       date: Date(Date.now()),
       utype: 2,
       verified: 0,
+      reset: 0,
     },
     req.body.password,
     (err, user) => {
       if (err) {
-        console.log("ERROR:   ", err);
         return res
           .status(400)
           .send({ code: 400, message: "Resource not found" });
@@ -41,7 +43,7 @@ router.post("/", async (req, res) => {
         from: process.env.EMAIL, // TODO: email sender
         to: user.username, // TODO: email receiver
         subject: "Nodemailer - Test",
-        html: `<h2>welcome ${user.fname} to Avscope</h2> <br> <h4>here is your verification link http://localhost:3000/register/verify/${user.userId}</h4>`,
+        html: `<h2>welcome ${user.fname} to Avscope</h2> <br> <h4>here is your verification link ${process.env.DOMAIN}/signup/email-verify/${user.userId}</h4>`,
         // text: "Wooohooo it works!!",
         //need to change the domain link later to avscope.in
       };
@@ -62,9 +64,8 @@ router.post("/", async (req, res) => {
 
 router.get("/verify/:id", async (req, res) => {
   const data = await User.find({ userId: req.params.id });
-  console.log(data[0].fname);
   if (data[0].verified) {
-    res.send(`you are already verified ${data[0].fname}`);
+    res.send(`already verified`);
   } else {
     await User.updateOne(
       { userId: data[0].userId },
@@ -73,11 +74,9 @@ router.get("/verify/:id", async (req, res) => {
           verified: 1,
         },
       },
-      (err) => {
+      err => {
         if (!err) {
-          res.send(
-            `thanks for the verification ${data[0].fname} you can now log back in ${err}`
-          ); //or else redirect the user to the main page
+          res.send(`email verified`); //or else redirect the user to the main page
         } else {
           res.send("Error: ", err);
         }
