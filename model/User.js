@@ -23,6 +23,8 @@ const userSchema = new Schema({
     {
       contentType: String,
       productId: String,
+      date: Date,
+      count: Number,
     },
   ],
   watchlist: [{ type: String }],

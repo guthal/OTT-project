@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
             reset: 1,
           },
         },
-        err => {
+        (err) => {
           if (!err) {
             res.send(`please check the email inbox so you can now log back in`); //or else redirect the user to the main page
           } else {
@@ -73,7 +73,7 @@ router.post("/reset/:id", async (req, res) => {
           reset: 0,
         },
       },
-      err => {
+      (err) => {
         if (!err) {
           res
             .status(200)
