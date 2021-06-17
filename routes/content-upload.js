@@ -38,7 +38,7 @@ router.post("/", (req, res) => {
         tag: "tag",
         language: req.body[0].language,
         subtitleLanguage: req.body[0].subtitleLanguage,
-        category: req.body[0].category,
+        certificate: req.body[0].certificate,
       },
       (err, content) => {
         if (err || !content) {
@@ -61,7 +61,7 @@ router.post("/", (req, res) => {
         thumbnail: req.body[0].thumbnailUrl,
         language: req.body[0].language,
         subtitleLanguage: req.body[0].subtitleLanguage,
-        category: req.body[0].category,
+        certificate: req.body[0].certificate,
       },
       (err, series) => {
         if (err || !series) {

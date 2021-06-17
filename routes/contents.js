@@ -64,7 +64,7 @@ router.get("/:contentId", (req, res) => {
         language,
         subtitleLanguage,
         contentUrl,
-        category,
+        certificate,
       } = content[0];
       res.send({
         id: contentId,
@@ -85,7 +85,7 @@ router.get("/:contentId", (req, res) => {
         language,
         subtitleLanguage,
         contentUrl,
-        category,
+        certificate,
       });
     });
   } else {

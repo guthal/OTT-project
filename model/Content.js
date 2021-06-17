@@ -40,7 +40,7 @@ const contentSchema = new Schema({
   ageRestriction: String,
   language: String,
   subtitleLanguage: String,
-  category: String,
+  certificate: String,
   contentSeriesInfo: {
     seasonId: String,
     seriesName: String,

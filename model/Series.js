@@ -15,7 +15,7 @@ const seriesSchema = new Schema({
   type: String,
   language: String,
   subtitleLanguage: String,
-  category: String,
+  certificate: String,
   price: {
     b: Number,
     r: Number,
