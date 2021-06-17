@@ -61,7 +61,10 @@ router.get("/:contentId", (req, res) => {
         tag,
         seriesId,
         contentSeriesInfo,
+        language,
+        subtitleLanguage,
         contentUrl,
+        category,
       } = content[0];
       res.send({
         id: contentId,
@@ -79,7 +82,10 @@ router.get("/:contentId", (req, res) => {
         tag,
         seriesId,
         contentSeriesInfo,
+        language,
+        subtitleLanguage,
         contentUrl,
+        category,
       });
     });
   } else {
