@@ -5,6 +5,7 @@ const login = require("./login-util");
 router.get("/verify", (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user.verified) {
+      console.log(`${req.user.username} verification is ${req.user.verified}`);
       if (!req.user.reset) {
         console.log("reset flag: ", req.user.reset);
         User.find({ userId: req.user.userId }, (err, user) => {

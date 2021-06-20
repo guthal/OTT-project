@@ -2,7 +2,7 @@
 
 require("dotenv").config();
 const express = require("express");
-
+const { v4 } = require("uuid");
 // const bodyParser = require("body-parser");
 // const ejs = require("ejs");
 const mongoose = require("mongoose");
@@ -16,6 +16,8 @@ const Schema = mongoose.Schema;
 const app = express();
 const encrypt = require("mongoose-encryption");
 const nodemailer = require("nodemailer");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const fetchUrl = require("fetch").fetchUrl;
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
@@ -50,7 +52,6 @@ const revenueRoute = require("./routes/revenue");
 const searchRoute = require("./routes/search");
 const accountRoute = require("./routes/account");
 const forgotRoute = require("./routes/forgot");
-
 const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`;
 
 //Route middleware
@@ -121,6 +122,73 @@ try {
     });
   });
 
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.AUTH_CLIENT_ID,
+        clientSecret: process.env.AUTH_CLIENT_SECRET,
+        callbackURL: "http://localhost:3001/auth/google/avscope",
+        userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+      },
+      async (accessToken, refreshToken, profile, cb) => {
+        const data = await User.findOne({ username: profile.emails[0].value });
+        // console.log(`Profile: ${profile} || dob: ${user.birthday.read}`);
+        console.log(accessToken);
+        const info = await fetchUrl(
+          `https://content-people.googleapis.com/v1/people/108930156662556466825?personFields=genders&key=${process.env.GOOGLE_API_KEY}&access_token=${accessToken}`
+        );
+        console.log(info);
+        if (!data) {
+          User.findOrCreate(
+            {
+              googleId: profile.id,
+              username: profile.emails[0].value,
+              fname: profile.name.givenName,
+              lname: profile.name.familyName,
+              verified: true,
+              utype: 2,
+              userId: v4(),
+              date: Date.now(),
+            },
+            function (err, user) {
+              return cb(err, user);
+            }
+          );
+        } else {
+          if (data.googleId) {
+            User.findOne(
+              {
+                googleId: profile.id,
+              },
+              (err, user) => {
+                // console.log(user);
+                return cb(err, user);
+              }
+            );
+          } else {
+            User.findOneAndUpdate(
+              {
+                username: profile.emails[0].value,
+                utype: data.utype,
+                date: data.date,
+                userId: data.userId,
+                verified: data.verified,
+              },
+              {
+                $set: {
+                  googleId: profile.id,
+                },
+              },
+              function (err, user) {
+                return cb(err, user);
+              }
+            );
+          }
+        }
+      }
+    )
+  );
+
   app.use("/contents", contentRoute);
   app.use("/register", authRoute);
   app.use("/creators", creatorRoute);
@@ -138,6 +206,29 @@ try {
   app.use("/search", searchRoute);
   app.use("/account", accountRoute); //need to pass creatorId in params
   app.use("/forgot", forgotRoute);
+
+  app.get(
+    "/auth/google",
+    passport.authenticate("google", {
+      scope: [
+        "profile",
+        "email",
+        // "https://www.googleapis.com/auth/user.birthday.read",
+        // "https://www.googleapis.com/auth/user.gender.read",
+        // "genders",
+        // "birthdays",
+      ],
+    })
+  );
+
+  app.get(
+    "/auth/google/avscope",
+    passport.authenticate("google", { failureRedirect: "/login" }),
+    function (req, res) {
+      // console.log("google response:", res);
+      res.redirect("/");
+    }
+  );
 
   let port = process.env.PORT;
   if (port == null || port == "") {
