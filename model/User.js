@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
+const findOrCreate = require("mongoose-findorcreate");
 const Schema = mongoose.Schema;
 //user info
 const userSchema = new Schema({
   userId: { type: String, required: true, unique: true },
-  fname: { type: String, required: true },
-  lname: { type: String, required: true },
+  fname: String,
+  lname: String,
   password: String,
-  username: { type: String, required: true, unique: true },
-  dateOfBirth: { type: Date, required: true },
-  gender: { type: String, required: true },
+  username: { type: String, unique: true },
+  dateOfBirth: Date,
+  gender: String,
   address: String,
   phone: { type: Number, unique: true },
   office: String,
@@ -23,13 +24,16 @@ const userSchema = new Schema({
     {
       contentType: String,
       productId: String,
+      date: Date,
+      count: Number,
     },
   ],
   watchlist: [{ type: String }],
   utype: { type: Number, required: true },
   verified: { type: Boolean, required: true },
-  reset: { type: Boolean, required: true },
+  reset: Boolean,
+  googleId: String,
 });
 userSchema.plugin(passportLocalMongoose);
-
+userSchema.plugin(findOrCreate);
 module.exports = mongoose.model("User", userSchema);

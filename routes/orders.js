@@ -34,6 +34,70 @@ router.post("/create", async (req, res) => {
   }
 });
 
+// router.get("/test", async (req, res) => {
+//   const { razorpayPaymentId, razorpayOrderId, userId, productId, contentType } =
+//     req.body;
+
+//   const data = await User.findOne({ userId: req.body.userId });
+//   const there = await data.history.find(
+//     (o) => o.productId === req.body.productId
+//   );
+//   console.log(there);
+//   if (there) {
+//     User.findOneAndUpdate(
+//       { userId: userId, "history.productId": productId },
+//       {
+//         $set: {
+//           // history: {
+//           //   productId: productId,
+//           //   contentType: contentType,
+//           //   date: Date.now(),
+//           // },
+//           "history.$.date": Date.now(),
+//         },
+//         $inc: {
+//           "history.$.count": 1,
+//         },
+//       }
+//     ).exec((err, content) => {
+//       if (err || !content) {
+//         return res.status(400).send({ message: err });
+//       }
+//       console.log("Content: ", content);
+//       res.send({
+//         msg: "success",
+//         orderId: razorpayOrderId,
+//         paymentId: razorpayPaymentId,
+//       });
+//     });
+//   } else {
+//     User.updateOne(
+//       { userId: userId },
+//       {
+//         $push: {
+//           history: {
+//             productId: productId,
+//             contentType: contentType,
+//             date: Date.now(),
+//           },
+//         },
+//         $inc: {
+//           count: 1,
+//         },
+//       }
+//     ).exec((err, content) => {
+//       if (err || !content) {
+//         return res.status(400).send({ message: "Failed to create season" });
+//       }
+//       res.send({
+//         msg: "success",
+//         orderId: razorpayOrderId,
+//         paymentId: razorpayPaymentId,
+//       });
+//     });
+//   }
+// });
+
 router.post("/success", async (req, res) => {
   try {
     const {
@@ -111,23 +175,59 @@ router.post("/success", async (req, res) => {
 
     await newPayment.save();
 
-    User.updateOne(
-      { userId: userId },
-      {
-        $push: {
-          history: { productId: productId, contentType: contentType },
-        },
-      }
-    ).exec((err, series) => {
-      if (err || !series) {
-        return res.status(400).send({ message: "Failed to create season" });
-      }
-      res.send({
-        msg: "success",
-        orderId: razorpayOrderId,
-        paymentId: razorpayPaymentId,
+    const data = await User.findOne({ userId: req.body.userId });
+    const there = await data.history.find(
+      (o) => o.productId === req.body.productId
+    );
+    // console.log(there);
+    if (there) {
+      User.findOneAndUpdate(
+        { userId: userId, "history.productId": productId },
+        {
+          $set: {
+            "history.$.date": Date.now(),
+          },
+          $inc: {
+            "history.$.count": 1,
+          },
+        }
+      ).exec((err, content) => {
+        if (err || !content) {
+          return res.status(400).send({ message: err });
+        }
+        console.log("Content: ", content);
+        res.send({
+          msg: "success",
+          orderId: razorpayOrderId,
+          paymentId: razorpayPaymentId,
+        });
       });
-    });
+    } else {
+      User.updateOne(
+        { userId: userId },
+        {
+          $push: {
+            history: {
+              productId: productId,
+              contentType: contentType,
+              date: Date.now(),
+            },
+          },
+          $inc: {
+            count: 1,
+          },
+        }
+      ).exec((err, content) => {
+        if (err || !content) {
+          return res.status(400).send({ message: "Failed to create season" });
+        }
+        res.send({
+          msg: "success",
+          orderId: razorpayOrderId,
+          paymentId: razorpayPaymentId,
+        });
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
