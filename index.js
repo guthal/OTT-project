@@ -17,7 +17,7 @@ const app = express();
 const encrypt = require("mongoose-encryption");
 const nodemailer = require("nodemailer");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const fetchUrl = require("fetch").fetchUrl;
+// const fetchUrl = require("fetch").fetchUrl;
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
@@ -134,10 +134,10 @@ try {
         const data = await User.findOne({ username: profile.emails[0].value });
         // console.log(`Profile: ${profile} || dob: ${user.birthday.read}`);
         console.log(accessToken);
-        const info = await fetchUrl(
-          `https://content-people.googleapis.com/v1/people/108930156662556466825?personFields=genders&key=${process.env.GOOGLE_API_KEY}&access_token=${accessToken}`
-        );
-        console.log(info);
+        // const info = await fetchUrl(
+        //   `https://content-people.googleapis.com/v1/people/108930156662556466825?personFields=genders&key=${process.env.GOOGLE_API_KEY}&access_token=${accessToken}`
+        // );
+        // console.log(info);
         if (!data) {
           User.findOrCreate(
             {
@@ -225,8 +225,7 @@ try {
     "/auth/google/avscope",
     passport.authenticate("google", { failureRedirect: "/login" }),
     function (req, res) {
-      // console.log("google response:", res);
-      res.redirect("/");
+      res.redirect(`${process.env.DOMAIN}`);
     }
   );
 
