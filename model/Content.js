@@ -34,6 +34,7 @@ const contentSchema = new Schema({
   commission: {
     b: Number,
     r: Number,
+    w: Number,
   },
   contentUrl: String,
   contentLanguage: String,

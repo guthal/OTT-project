@@ -12,6 +12,7 @@ router.post("/", (req, res) => {
     if (purchaseType.buy > 0) return "b";
     if (purchaseType.rent > 0) return "r";
     if (purchaseType.weekly > 0) return "w";
+    else return "f";
   };
 
   if (action === "create_content") {
@@ -26,7 +27,7 @@ router.post("/", (req, res) => {
         userId: req.body[0].creatorId,
         description: req.body[0].description,
         isAvailable: false,
-        commission: req.body[0].commission || { b: 0, r: 0 },
+        commission: req.body[0].commission || { b: -1, r: -1, w: -1 },
         title: req.body[0].title,
         thumbnail: req.body[0].thumbnailUrl,
         type: getType(req.body[0].purchaseType),
@@ -84,7 +85,7 @@ router.post("/", (req, res) => {
             description: req.body[0].description,
             thumbnail: req.body[0].thumbnailUrl,
             startContentId: "",
-            commission: req.body[0].commission || { b: 0, r: 0 }, //dont forget to remove the b:0 r:0
+            commission: req.body[0].commission || { b: -1, r: -1, w: -1 }, //dont forget to remove the b:0 r:0
             type: getType(req.body[0].purchaseType),
             createdAt: new Date(),
             price: {

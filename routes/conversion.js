@@ -3,7 +3,6 @@ const Content = require("../model/Content");
 const Series = require("../model/Series");
 const _ = require("lodash");
 const moment = require("moment");
-const { updateOne } = require("../model/Content");
 
 router.get("/", (req, res) => {
   Content.find({ type: "w" }).exec((err, content) => {
