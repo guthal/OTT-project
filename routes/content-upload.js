@@ -7,7 +7,7 @@ const { v4 } = require("uuid");
 router.post("/", (req, res) => {
   const action = req.body[0].action;
 
-  const getType = purchaseType => {
+  const getType = (purchaseType) => {
     if (purchaseType.buy > 0 && purchaseType.rent > 0) return "br";
     if (purchaseType.buy > 0) return "b";
     if (purchaseType.rent > 0) return "r";
@@ -36,6 +36,9 @@ router.post("/", (req, res) => {
           w: Number(req.body[0].purchaseType.weekly),
         },
         tag: "tag",
+        language: req.body[0].language,
+        subtitleLanguage: req.body[0].subtitleLanguage,
+        certificate: req.body[0].certificate,
       },
       (err, content) => {
         if (err || !content) {
@@ -56,6 +59,9 @@ router.post("/", (req, res) => {
         seasons: [],
         genre: req.body[0].genres,
         thumbnail: req.body[0].thumbnailUrl,
+        language: req.body[0].language,
+        subtitleLanguage: req.body[0].subtitleLanguage,
+        certificate: req.body[0].certificate,
       },
       (err, series) => {
         if (err || !series) {
@@ -98,23 +104,23 @@ router.post("/", (req, res) => {
   } else if (action === "create_episode") {
     let currentEpisodeNo;
     Content.find({ seriesId: req.body[0].seriesId })
-      .then(contents => {
+      .then((contents) => {
         const episodeList = contents
           .filter(
-            content =>
+            (content) =>
               content.contentSeriesInfo.seasonNo === req.body[0].seasonNo
           )
-          .map(content => content.contentSeriesInfo.episodeNo);
+          .map((content) => content.contentSeriesInfo.episodeNo);
         currentEpisodeNo = Math.max(...episodeList, 0);
       })
       .then(() => {
         return Series.findOne({ seriesId: req.body[0].seriesId });
       })
 
-      .then(series => {
+      .then((series) => {
         const seasons = series.seasons;
         const season = seasons.find(
-          season => season.seasonNo === req.body[0].seasonNo
+          (season) => season.seasonNo === req.body[0].seasonNo
         );
 
         return Content.create({
@@ -137,9 +143,11 @@ router.post("/", (req, res) => {
             seriesName: series.seriesName,
             episodeNo: currentEpisodeNo + 1,
           },
+          language: series.language,
+          subtitleLanguage: series.subtitleLanguage,
         });
       })
-      .then(content => {
+      .then((content) => {
         if (content.contentSeriesInfo.episodeNo === 1) {
           return Series.findOneAndUpdate(
             {
@@ -155,7 +163,7 @@ router.post("/", (req, res) => {
       .then(() => {
         return res.send({ message: "success" });
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(400).send(err.message);
       });
   }

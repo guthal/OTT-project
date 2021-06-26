@@ -13,6 +13,9 @@ const seriesSchema = new Schema({
   ageRestriction: String,
   genre: Array,
   type: String,
+  language: String,
+  subtitleLanguage: String,
+  certificate: String,
   price: {
     b: Number,
     r: Number,
