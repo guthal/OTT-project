@@ -17,6 +17,7 @@ const app = express();
 const encrypt = require("mongoose-encryption");
 const nodemailer = require("nodemailer");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const facebookStrategy = require("passport-facebook").Strategy;
 const fetchUrl = require("fetch").fetchUrl;
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -122,12 +123,29 @@ try {
     });
   });
 
+  //facebook login
+  passport.use(
+    new facebookStrategy(
+      {
+        // pull in our app id and secret from our auth.js file
+        clientID: process.env.FB_APP_ID,
+        clientSecret: process.env.FB_APP_SECRET,
+        callbackURL: "http://localhost:3001/auth/facebook",
+      }, // facebook will send back the token and profile
+      function (token, refreshToken, profile, done) {
+        console.log(profile);
+        return done(null, profile);
+      }
+    )
+  );
+
+  //google login
   passport.use(
     new GoogleStrategy(
       {
         clientID: process.env.AUTH_CLIENT_ID,
         clientSecret: process.env.AUTH_CLIENT_SECRET,
-        callbackURL: "http://localhost:3001/auth/google/avscope",
+        callbackURL: `${process.env.DOMAIN}/auth/google/avscope`,
         userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       },
       async (accessToken, refreshToken, profile, cb) => {
@@ -230,6 +248,18 @@ try {
     }
   );
 
+  app.get(
+    "/auth/facebook",
+    passport.authenticate("facebook", { scope: "email,user_photos" })
+  );
+
+  app.get(
+    "/auth/facebook/avscope",
+    passport.authenticate("facebook", {
+      successRedirect: "/",
+      failureRedirect: "/login",
+    })
+  );
   let port = process.env.PORT;
   if (port == null || port == "") {
     port = 8000;
