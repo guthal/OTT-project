@@ -122,12 +122,13 @@ try {
     });
   });
 
+
   passport.use(
     new GoogleStrategy(
       {
         clientID: process.env.AUTH_CLIENT_ID,
         clientSecret: process.env.AUTH_CLIENT_SECRET,
-        callbackURL: "http://localhost:3001/auth/google/avscope",
+        callbackURL: `/auth/google/avscope`,
         userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       },
       async (accessToken, refreshToken, profile, cb) => {
