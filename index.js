@@ -146,17 +146,17 @@ try {
       {
         clientID: process.env.AUTH_CLIENT_ID,
         clientSecret: process.env.AUTH_CLIENT_SECRET,
-        callbackURL: `${process.env.DOMAIN}/auth/google/avscope`,
+        callbackURL: `${process.env.SERVER_DOMAIN}/auth/google/avscope`,
         userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       },
       async (accessToken, refreshToken, profile, cb) => {
         const data = await User.findOne({ username: profile.emails[0].value });
         // console.log(`Profile: ${profile} || dob: ${user.birthday.read}`);
         console.log(accessToken);
-        const info = await fetchUrl(
-          `https://content-people.googleapis.com/v1/people/108930156662556466825?personFields=genders&key=${process.env.GOOGLE_API_KEY}&access_token=${accessToken}`
-        );
-        console.log(info);
+        // const info = await fetchUrl(
+        //   `https://content-people.googleapis.com/v1/people/108930156662556466825?personFields=genders&key=${process.env.GOOGLE_API_KEY}&access_token=${accessToken}`
+        // );
+        // console.log(info);
         if (!data) {
           User.findOrCreate(
             {
@@ -244,8 +244,7 @@ try {
     "/auth/google/avscope",
     passport.authenticate("google", { failureRedirect: "/login" }),
     function (req, res) {
-      // console.log("google response:", res);
-      res.redirect("/");
+      res.redirect(`${process.env.DOMAIN}`);
     }
   );
 

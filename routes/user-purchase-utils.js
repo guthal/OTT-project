@@ -13,13 +13,13 @@ const getUserPurchase = (req, res, productId) => {
     if (err || !(user && user[0]))
       return res.status(404).send({ code: 404, message: "User not found" });
   })
-    .then((user) => {
+    .then(user => {
       const seasonProducts = user[0].history
-        .filter((product) => product.contentType === "series")
-        .map((product) => product.productId);
+        .filter(product => product.contentType === "series")
+        .map(product => product.productId);
       const contentProducts = user[0].history
-        .filter((product) => product.contentType === "content")
-        .map((product) => product.productId);
+        .filter(product => product.contentType === "content")
+        .map(product => product.productId);
 
       if (productId) {
         if (seasonProducts.includes(productId)) seasonIds.push(productId);
@@ -44,8 +44,8 @@ const getUserPurchase = (req, res, productId) => {
         }
       );
     })
-    .then((purchase) => {
-      purchase.map((val) => {
+    .then(purchase => {
+      purchase.map(val => {
         purchaseData.push({
           purchaseDate: val.date,
           productId: val.productId,
@@ -64,10 +64,11 @@ const getUserPurchase = (req, res, productId) => {
             .send({ code: 404, message: "Content not found" });
       });
     })
-    .then((content) => {
-      content.forEach((val) => {
+    .then(content => {
+      content.forEach(val => {
         productData.push({
           productId: val.contentId,
+          productType: "content",
           contentTitle: val.title,
           thumbnail: val.thumbnail,
         });
@@ -84,20 +85,21 @@ const getUserPurchase = (req, res, productId) => {
         }
       );
     })
-    .then((series) => {
+    .then(series => {
       const seasonsList = [];
-      series.forEach((eachSeries) => {
-        eachSeries.seasons.forEach((season) => {
+      series.forEach(eachSeries => {
+        eachSeries.seasons.forEach(season => {
           seasonsList.push(season);
         });
       });
 
       return seasonsList;
     })
-    .then((seasonsList) => {
-      seasonsList.forEach((season) => {
+    .then(seasonsList => {
+      seasonsList.forEach(season => {
         productData.push({
           productId: season.seasonId,
+          productType: "series",
           contentTitle: season.title,
           thumbnail: season.thumbnail,
         });
@@ -105,9 +107,9 @@ const getUserPurchase = (req, res, productId) => {
     })
 
     .then(() => {
-      return purchaseData.map((data) => {
+      return purchaseData.map(data => {
         const purchaseContent = productData.find(
-          (content) => content.productId === data.productId
+          content => content.productId === data.productId
         );
 
         return {
@@ -117,7 +119,7 @@ const getUserPurchase = (req, res, productId) => {
         };
       });
     })
-    .then((purchasedContentData) => res.status(200).send(purchasedContentData));
+    .then(purchasedContentData => res.status(200).send(purchasedContentData));
 };
 
 module.exports = getUserPurchase;
