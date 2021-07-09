@@ -145,7 +145,7 @@ try {
       {
         clientID: process.env.AUTH_CLIENT_ID,
         clientSecret: process.env.AUTH_CLIENT_SECRET,
-        callbackURL: `${process.env.DOMAIN}/auth/google/avscope`,
+        callbackURL: `${process.env.SERVER_DOMAIN}/auth/google/avscope`,
         userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       },
       async (accessToken, refreshToken, profile, cb) => {
