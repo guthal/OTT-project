@@ -130,10 +130,11 @@ try {
         // pull in our app id and secret from our auth.js file
         clientID: process.env.FB_APP_ID,
         clientSecret: process.env.FB_APP_SECRET,
-        callbackURL: "http://localhost:3001/auth/facebook",
+        callbackURL: "http://localhost:3001/auth/facebook/avscope",
+        profileFields: ["id", "displayName", "name", "gender", "email"],
       }, // facebook will send back the token and profile
       function (token, refreshToken, profile, done) {
-        console.log(profile);
+        console.log("profile: ", profile);
         return done(null, profile);
       }
     )
