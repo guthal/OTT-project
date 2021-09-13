@@ -52,9 +52,11 @@ const conversionRoute = require("./routes/conversion");
 const revenueRoute = require("./routes/revenue");
 const searchRoute = require("./routes/search");
 const accountRoute = require("./routes/account");
+const ctrRoute = require("./routes/ctr");
 const forgotRoute = require("./routes/forgot");
 const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`;
-
+const supportRoute = require("./routes/support");
+const googleLoginRoute = require("./routes/googleLogin");
 //Route middleware
 try {
   app.set("trust proxy", 1); // trust first proxy
@@ -152,7 +154,7 @@ try {
       async (accessToken, refreshToken, profile, cb) => {
         const data = await User.findOne({ username: profile.emails[0].value });
         // console.log(`Profile: ${profile} || dob: ${user.birthday.read}`);
-        console.log(accessToken);
+        console.log("gender: ", profile.gender);
         // const info = await fetchUrl(
         //   `https://content-people.googleapis.com/v1/people/108930156662556466825?personFields=genders&key=${process.env.GOOGLE_API_KEY}&access_token=${accessToken}`
         // );
@@ -225,6 +227,9 @@ try {
   app.use("/search", searchRoute);
   app.use("/account", accountRoute); //need to pass creatorId in params
   app.use("/forgot", forgotRoute);
+  app.use("/ctr", ctrRoute);
+  app.use("/support", supportRoute);
+  app.use("/google-login", googleLoginRoute);
 
   app.get(
     "/auth/google",

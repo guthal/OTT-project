@@ -36,6 +36,11 @@ router.post("/", (req, res) => {
           r: Number(req.body[0].purchaseType.rent),
           w: Number(req.body[0].purchaseType.weekly),
         },
+        weeklyInfo: {
+          weeklyStartAt: req.body[0].weeklyStartAt,
+          weeks: req.body[0].weeks,
+          streamingCost: req.body[0].streamingCost,
+        },
         tag: "tag",
         language: req.body[0].language,
         subtitleLanguage: req.body[0].subtitleLanguage,

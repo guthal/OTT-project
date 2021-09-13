@@ -30,6 +30,7 @@ const contentSchema = new Schema({
     w: Number,
   },
   weeklyInfo: {
+    //TODO:add insertion in backend
     weeklyStartAt: Date,
     weeks: Number,
     streamingCost: Number,
