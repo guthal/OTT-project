@@ -33,6 +33,13 @@ const userSchema = new Schema({
   verified: { type: Boolean, required: true },
   reset: Boolean,
   googleId: String,
+  supportUsHistory: [
+    {
+      orderId: String,
+      supportUsDate: Date,
+      amount: Number,
+    },
+  ],
 });
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
