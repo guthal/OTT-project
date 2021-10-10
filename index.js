@@ -55,7 +55,7 @@ const accountRoute = require("./routes/account");
 const ctrRoute = require("./routes/ctr");
 const forgotRoute = require("./routes/forgot");
 const mongoUrl = `mongodb+srv://${process.env.MONGO}:${process.env.MONGO_PASS}@cluster0.sesb2.mongodb.net/${process.env.WEB}?retryWrites=true&w=majority`;
-const supportRoute = require("./routes/support");
+const supportRoute = require("./routes/supportUs");
 const googleLoginRoute = require("./routes/googleLogin");
 //Route middleware
 try {

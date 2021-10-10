@@ -5,7 +5,6 @@ const login = require("./login-util");
 router.get("/verify", (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user.verified) {
-      console.log(`${req.user.username} verification is ${req.user.verified}`);
       if (!req.user.reset) {
         User.find({ userId: req.user.userId }, (err, user) => {
           if (err || !user)
@@ -23,6 +22,7 @@ router.get("/verify", (req, res) => {
             watchlist: req.user.watchlist,
             verified: req.user.verified,
             dateOfBirth: req.user.dateOfBirth,
+            gender: req.user.gender,
           });
         });
       } else {
