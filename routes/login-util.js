@@ -10,7 +10,7 @@ const login = async (req, res) => {
       username: req.body.username,
       password: req.body.password,
     });
-    req.login(user, (err) => {
+    req.login(user, err => {
       if (err) {
         res.status(401).send("Unauthorised");
       } else {
@@ -18,10 +18,11 @@ const login = async (req, res) => {
           User.find(
             { userId: req.user.userId, verified: true, reset: false },
             (err, userData) => {
-              if (err || !userData)
+              if (err || !userData) {
                 return res
                   .status(401)
                   .send({ code: 401, message: "User Unauthorized" });
+              }
               res.send({
                 userId: req.user.userId,
                 username: req.user.username,
